@@ -23,14 +23,19 @@ const pool = new Pool({
 async function fetchDataFromAPI() {
   try {
     console.log("Fetching data from API...");
-    const [service1Response, service2Response] = await Promise.all([
-      axios.get(`https://cryptopanic.com/api/v1/posts/?auth_token=${process.env.CryptoPanic_KEY}&public=true`),
+    const [service1Response, service2Response, forexResponse] = await Promise.all([
+      axios.get(
+        `https://cryptopanic.com/api/v1/posts/?auth_token=${process.env.CryptoPanic_KEY}&public=true`
+      ),
       axios.get(`https://cryptocurrency-news2.p.rapidapi.com/v1/coindesk`, {
         headers: {
           "X-RapidAPI-Key": process.env.Rapidapi_KEY,
           "X-RapidAPI-Host": "cryptocurrency-news2.p.rapidapi.com",
-        }
-      })
+        },
+      }),
+
+      axios.get(`https://forexnewsapi.com/api/v1/category?section=general&items=3&page=1&token=${process.env.FX_KEY}`)
+
     ]);
 
     const serviceFilteredData1 = service1Response.data.results.map((news) => ({
@@ -38,21 +43,62 @@ async function fetchDataFromAPI() {
       publication_time: news.published_at,
       source: news.domain,
       content: news.url,
-      related_instruments: news.currencies ? news.currencies.map(currency => currency.title).join(', ') : null,
-      img: null
+      related_instruments: news.currencies
+        ? news.currencies.map((currency) => currency.title).join(", ")
+        : null,
+      img: null,
+      sentiment: null,
+      category: "crypto"
     }));
 
     const serviceFilteredData2 = service2Response.data.data.map((news) => ({
       title: news.title,
       publication_time: news.createdAt,
-      source: 'coindesk',
+      source: "coindesk",
       content: news.url,
       related_instruments: null,
-      img: news.thumbnail
+      img: news.thumbnail,
+      sentiment: null,
+      category: "crypto"
     }));
 
+
+    const forexFilteredData = forexResponse.data.data.map((news) => ({
+      title: news.title,
+      publication_time: news.date,
+      source: news.source_name,
+      content: news.news_url,
+      related_instruments: news.currency
+      ? news.currency.map((currency) => currency.title).join(", ")
+      : null,
+      img: news.image_url,
+      sentiment: news.sentiment,
+      category: determineCategory(news)
+    }));
+
+    function determineCategory(news) {
+      // Check for specific financial topics
+      if (news.currency) {
+          return "forex";
+      }
+      if (news.topics) {
+          // Define the economic keywords
+          const economicKeywords = ["cpi", "ppi", "Oil", "Natural Gas", "unemployment", "Home Sales" ];
+          // Check for 'gold'
+          if (news.topics.includes("gold")) {
+              return "gold";
+          }
+          // Check for economic keywords
+          if (news.topics.some(topic => economicKeywords.includes(topic.toLowerCase()))) {
+              return "economy";
+          }
+      }
+      return "general";
+  }
+
+
     console.log("Data fetched");
-    return serviceFilteredData1.concat(serviceFilteredData2);
+    return [...serviceFilteredData1, ...serviceFilteredData2, ...forexFilteredData];
 
 
   } catch (error) {
@@ -92,14 +138,16 @@ async function saveNewData(dataList) {
       if (res.rows.length === 0) {
         // If no existing record, insert new data
         await client.query(
-          "INSERT INTO market_news (title, content, related_instruments, publication_time, source, img) VALUES ($1, $2, $3, $4, $5, $6)",
+          "INSERT INTO market_news (title, content, related_instruments, publication_time, source, img, sentiment, category) VALUES ($1, $2, $3, $4, $5, $6, $7, $8)",
           [
             data.title,
             data.content,
             data.related_instruments,
             data.publication_time,
             data.source,
-            data.img
+            data.img,
+            data.sentiment,
+            data.category
           ]
         );
         console.log("New data inserted.");
@@ -122,10 +170,10 @@ async function saveNewData(dataList) {
 cron.schedule("*/1 * * * *", async () => {
   console.log("Running fetch every 1 minutes");
 
-  try{
+  try {
     const dataList = await fetchDataFromAPI();
     console.log("Data fetched:", dataList);
-  
+
     if (dataList.length > 0) {
       await saveNewData(dataList);
       console.log("Data processing completed successfully.");
@@ -135,11 +183,7 @@ cron.schedule("*/1 * * * *", async () => {
   } catch (error) {
     console.error("Failed during scheduled task:", error);
   }
-  
 });
-
-
-
 
 
 
@@ -195,64 +239,8 @@ app.get("/markets", async (req, res) => {
   }
 });
 
-// app.get("/news", async (req, res) => {
-//   try {
-//     const response = await axios.get(
-//       `https://cryptopanic.com/api/v1/posts/?auth_token=${process.env.CryptoPanic_KEY}&public=true`
-//     );
-
-//     const filteredData = response.data.results.map((news) => ({
-//         title: news.title,
-//         publicationDate: news.published_at,
-//         source: news.domain,
-//         content: news.url,
-//         // relatedInstruments:
-//     }))
-
-//     // res.json(response.data);
-//     res.json(filteredData);
-//   } catch {
-//     if (error.response) {
-//       // Request made and server responded
-//       console.log(error.response.data);
-//       console.log(error.response.status);
-//       console.log(error.response.headers);
-//       res.status(error.response.status).send(error.response.data);
-//     } else if (error.request) {
-//       // The request was made but no response was received
-//       console.log(error.request);
-//       res.status(504).send("The request was made but no response was received");
-//     } else {
-//       // Something happened in setting up the request that triggered an Error
-//       console.log("Error", error.message);
-//       res.status(500).send(error.message);
-//     }
-//   }
-// });
-
 app.get("/news", async (req, res) => {
-  try {
-    const data = await fetchDataFromAPI();
-
-    // res.json(response.data);
-    res.json(data);
-  } catch {
-    if (error.response) {
-      // Request made and server responded
-      console.log(error.response.data);
-      console.log(error.response.status);
-      console.log(error.response.headers);
-      res.status(error.response.status).send(error.response.data);
-    } else if (error.request) {
-      // The request was made but no response was received
-      console.log(error.request);
-      res.status(504).send("The request was made but no response was received");
-    } else {
-      // Something happened in setting up the request that triggered an Error
-      console.log("Error", error.message);
-      res.status(500).send(error.message);
-    }
-  }
+  console.log("Hello world");
 });
 
 app.listen(port, () => {
