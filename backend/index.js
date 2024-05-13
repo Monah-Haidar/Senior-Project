@@ -23,45 +23,36 @@ const pool = new Pool({
 async function fetchDataFromAPI() {
   try {
     console.log("Fetching data from API...");
-    const service1 = await axios.get(
-      `https://cryptopanic.com/api/v1/posts/?auth_token=${process.env.CryptoPanic_KEY}&public=true`
-    );
-
-    const service2 = await axios.get(
-      `https://cryptocurrency-news2.p.rapidapi.com/v1/coindesk`,
-      {
+    const [service1Response, service2Response] = await Promise.all([
+      axios.get(`https://cryptopanic.com/api/v1/posts/?auth_token=${process.env.CryptoPanic_KEY}&public=true`),
+      axios.get(`https://cryptocurrency-news2.p.rapidapi.com/v1/coindesk`, {
         headers: {
           "X-RapidAPI-Key": process.env.Rapidapi_KEY,
           "X-RapidAPI-Host": "cryptocurrency-news2.p.rapidapi.com",
-        },
-      }
-    );
+        }
+      })
+    ]);
 
-    const serviceFilteredData1 = response.data.results.map((news) => ({
+    const serviceFilteredData1 = service1Response.data.results.map((news) => ({
       title: news.title,
       publication_time: news.published_at,
       source: news.domain,
       content: news.url,
-      related_instruments: news.currencies.code,
+      related_instruments: news.currencies ? news.currencies.map(currency => currency.title).join(', ') : null,
       img: null
     }));
 
-    const serviceFilteredData2 = response.data.data.map((news) => ({
+    const serviceFilteredData2 = service2Response.data.data.map((news) => ({
       title: news.title,
       publication_time: news.createdAt,
-      source: coindesk,
+      source: 'coindesk',
       content: news.url,
       related_instruments: null,
       img: news.thumbnail
     }));
 
-    const combinedData = {
-      service1: serviceFilteredData1,
-      service2: serviceFilteredData2,
-  };
-
     console.log("Data fetched");
-    return combinedData;
+    return serviceFilteredData1.concat(serviceFilteredData2);
 
 
   } catch (error) {
@@ -101,13 +92,14 @@ async function saveNewData(dataList) {
       if (res.rows.length === 0) {
         // If no existing record, insert new data
         await client.query(
-          "INSERT INTO market_news (title, content, related_instruments, publication_time, source) VALUES ($1, $2, $3, $4, $5)",
+          "INSERT INTO market_news (title, content, related_instruments, publication_time, source, img) VALUES ($1, $2, $3, $4, $5, $6)",
           [
             data.title,
             data.content,
             data.related_instruments,
             data.publication_time,
             data.source,
+            data.img
           ]
         );
         console.log("New data inserted.");
@@ -129,16 +121,27 @@ async function saveNewData(dataList) {
 // Scheduled task to run every 1 minutes
 cron.schedule("*/1 * * * *", async () => {
   console.log("Running fetch every 1 minutes");
-  const dataList = await fetchDataFromAPI();
-  console.log("Data fetched:", dataList);
 
-  if (dataList && dataList.length > 0) {
-    await saveNewData(dataList);
-    console.log("Data processing completed successfully.");
-  } else {
-    console.log("No data to process or fetch failed.");
+  try{
+    const dataList = await fetchDataFromAPI();
+    console.log("Data fetched:", dataList);
+  
+    if (dataList.length > 0) {
+      await saveNewData(dataList);
+      console.log("Data processing completed successfully.");
+    } else {
+      console.log("No data to process or fetch failed.");
+    }
+  } catch (error) {
+    console.error("Failed during scheduled task:", error);
   }
+  
 });
+
+
+
+
+
 
 app.get("/", (req, res) => {
   console.log("Hello world");
