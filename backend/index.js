@@ -23,19 +23,47 @@ const pool = new Pool({
 async function fetchDataFromAPI() {
   try {
     console.log("Fetching data from API...");
-    const response = await axios.get(
+    const service1 = await axios.get(
       `https://cryptopanic.com/api/v1/posts/?auth_token=${process.env.CryptoPanic_KEY}&public=true`
     );
 
-    const filteredData = response.data.results.map((news) => ({
+    const service2 = await axios.get(
+      `https://cryptocurrency-news2.p.rapidapi.com/v1/coindesk`,
+      {
+        headers: {
+          "X-RapidAPI-Key": process.env.Rapidapi_KEY,
+          "X-RapidAPI-Host": "cryptocurrency-news2.p.rapidapi.com",
+        },
+      }
+    );
+
+    const serviceFilteredData1 = response.data.results.map((news) => ({
       title: news.title,
       publication_time: news.published_at,
       source: news.domain,
       content: news.url,
-      related_instruments: null,
+      related_instruments: news.currencies.code,
+      img: null
     }));
+
+    const serviceFilteredData2 = response.data.data.map((news) => ({
+      title: news.title,
+      publication_time: news.createdAt,
+      source: coindesk,
+      content: news.url,
+      related_instruments: null,
+      img: news.thumbnail
+    }));
+
+    const combinedData = {
+      service1: serviceFilteredData1,
+      service2: serviceFilteredData2,
+  };
+
     console.log("Data fetched");
-    return filteredData;
+    return combinedData;
+
+
   } catch (error) {
     if (error.response) {
       // Request made and server responded
@@ -67,9 +95,8 @@ async function saveNewData(dataList) {
       const res = await client.query(
         "SELECT * FROM market_news WHERE title = $1 AND publication_time = $2 AND source = $3",
         [data.title, data.publication_time, data.source]
-      );  
+      );
       console.log("Query executed. Rows found:", res.rows.length);
-  
 
       if (res.rows.length === 0) {
         // If no existing record, insert new data
@@ -90,9 +117,6 @@ async function saveNewData(dataList) {
     }
     await client.query("COMMIT");
     console.log("Transaction committed successfully.");
-
-
-
   } catch (error) {
     console.error("Failed to save data:", error);
     await client.query("ROLLBACK");
@@ -104,7 +128,6 @@ async function saveNewData(dataList) {
 
 // Scheduled task to run every 1 minutes
 cron.schedule("*/1 * * * *", async () => {
-
   console.log("Running fetch every 1 minutes");
   const dataList = await fetchDataFromAPI();
   console.log("Data fetched:", dataList);
@@ -112,7 +135,6 @@ cron.schedule("*/1 * * * *", async () => {
   if (dataList && dataList.length > 0) {
     await saveNewData(dataList);
     console.log("Data processing completed successfully.");
-
   } else {
     console.log("No data to process or fetch failed.");
   }
