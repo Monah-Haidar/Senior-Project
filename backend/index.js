@@ -272,7 +272,31 @@ app.get('/api/journal_entries/user/:userId', async (req, res) => {
   }
 });
 
+// update journal entries for a user
+app.put('/api/journal_entries/:entryId', async (req, res) => {
+  const { entryId } = req.params;
+  const { title, content, mood, market_conditions } = req.body;
+  try {
+    const result = await pool.query(
+      'UPDATE journal_entries SET title = $1, content = $2, mood = $3, market_conditions = $4 WHERE entry_id = $5 RETURNING *',
+      [title, content, mood, market_conditions, entryId]
+    );
+    res.status(200).json(result.rows[0]);
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+});
 
+// Delete an entry
+app.delete('/api/journal_entries/:entryId', async (req, res) => {
+  const { entryId } = req.params;
+  try {
+    await pool.query('DELETE FROM journal_entries WHERE entry_id = $1', [entryId]);
+    res.status(204).send();
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+});
 
 
 
