@@ -187,9 +187,7 @@ cron.schedule("*/1 * * * *", async () => {
 
 
 
-app.get("/", (req, res) => {
-  console.log("Hello world");
-});
+
 
 app.get("/markets", async (req, res) => {
   try {
@@ -239,10 +237,55 @@ app.get("/markets", async (req, res) => {
   }
 });
 
+
 app.get("/news", async (req, res) => {
   console.log("Hello world");
 });
 
+
+
+// Create a journal entry
+app.post('/api/journal_entries', async (req, res) => {
+  const { user_id, trade_id, title, content, entry_date, mood, market_conditions } = req.body;
+  try {
+    const result = await pool.query(
+      'INSERT INTO journal_entries (user_id, trade_id, title, content, entry_date, mood, market_conditions) VALUES ($1, $2, $3, $4, $5, $6, $7) RETURNING *',
+      [user_id, trade_id, title, content, entry_date, mood, market_conditions]
+    );
+    res.status(201).json(result.rows[0]);
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+});
+
+// retrieve journal entries for a user
+app.get('/api/journal_entries/user/:userId', async (req, res) => {
+  const { userId } = req.params;
+  try {
+    const result = await pool.query(
+      'SELECT je.*, t.*, o.* FROM journal_entries je LEFT JOIN trades t ON je.trade_id = t.trade_id LEFT JOIN orders o ON t.order_id = o.order_id WHERE je.user_id = $1',
+      [userId]
+    );
+    res.status(200).json(result.rows);
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+});
+
+
+
+
+
+
+
 app.listen(port, () => {
   console.log(`Listening on port ${port}.`);
 });
+
+
+
+
+
+
+
+
