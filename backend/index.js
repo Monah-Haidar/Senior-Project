@@ -151,7 +151,7 @@ app.post("/journals/", async (req, res) => {
       ]
     );
     console.log(" query finished");
-    
+
     res.json("Journal Added Successfully");
   } catch (error) {
     console.error(error);
@@ -195,44 +195,58 @@ app.put("/journals/:journal_id", async (req, res) => {
 
     // Avoid SQL query execution if no valid fields are provided
     if (fields.length === 0) {
-      return res.json('No valid fields provided for update.');
+      return res.json("No valid fields provided for update.");
     }
-    
+
     values.push(journal_id);
 
-    const queryString = `UPDATE journals SET ${fields.join(', ')} WHERE journal_id = $${fields.length + 1} RETURNING *;`
+    const queryString = `UPDATE journals SET ${fields.join(
+      ", "
+    )} WHERE journal_id = $${fields.length + 1} RETURNING *;`;
     console.log(queryString);
     console.log(values);
 
     const result = await pool.query(queryString, values);
 
     if (result.rows.length === 0) {
-      return res.json('Journal not found or no change made.');
-  }
+      return res.json("Journal not found or no change made.");
+    }
 
     res.json(result.rows);
-
-
   } catch (error) {
     console.error(error);
     res.status(500).json({ message: "Server error" });
   }
 });
 
+app.delete("/journals/:journal_id", async (req, res) => {
+  const { journal_id } = req.params;
 
+  // Validate journalId as a valid number
+  if (isNaN(parseInt(journal_id))) {
+    return res.json("Invalid journal ID");
+  }
 
+  try {
+    const checkResult = await pool.query(
+      "SELECT * FROM journals WHERE journal_id = $1",
+      [journal_id]
+    );
+    if (checkResult.rows.length === 0) {
+      return res.json("Journal not found.");
+    }
 
+    const deleteResult = await pool.query('DELETE FROM journals WHERE journal_id = $1', [journal_id]);
 
-
-
-
-
-
-
-
-
-
-
+    if (deleteResult.rows.length === 0){
+      res.json('Journal deleted successfully.');
+    }
+   
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: "Server error" });
+  }
+});
 
 // ========================== Journal Entires ================================
 
