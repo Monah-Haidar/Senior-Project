@@ -66,12 +66,14 @@ app.get("/markets", async (req, res) => {
 // Get all journals
 app.get("/journals", async (req, res) => {
   try {
-    const { rows } = await pool.query("SELECT * FROM journals");
-
-    res.json(rows);
+    const result = await pool.query("SELECT * FROM journals");
+    if(!result.rows[0]){
+      return res.json("Journals not found");
+    }
+    res.json(result.rows);
   } catch (error) {
     console.error(error);
-    res.status(500).json({ message: "Server error" });
+    res.json("Server error");
   }
 });
 
@@ -151,11 +153,14 @@ app.post("/journals/", async (req, res) => {
       ]
     );
     console.log(" query finished");
-
-    res.json("Journal Added Successfully");
+    res.json({
+      message: 'Journal Created Successfully',
+      data: result.rows
+    })
+    //res.json("Journal Created Successfully");
   } catch (error) {
     console.error(error);
-    res.status(500).json({ message: "Server error" });
+    res.json("Server error");
   }
 });
 
@@ -211,11 +216,14 @@ app.put("/journals/:journal_id", async (req, res) => {
     if (result.rows.length === 0) {
       return res.json("Journal not found or no change made.");
     }
-
-    res.json(result.rows);
+    res.json({
+      message: 'Journal Updated Successfully',
+      data: result.rows
+    })
+    // res.json(result.rows);
   } catch (error) {
     console.error(error);
-    res.status(500).json({ message: "Server error" });
+    res.json("Server error");
   }
 });
 
@@ -236,36 +244,140 @@ app.delete("/journals/:journal_id", async (req, res) => {
       return res.json("Journal not found.");
     }
 
-    const deleteResult = await pool.query('DELETE FROM journals WHERE journal_id = $1', [journal_id]);
+    const deleteResult = await pool.query(
+      "DELETE FROM journals WHERE journal_id = $1",
+      [journal_id]
+    );
 
-    if (deleteResult.rows.length === 0){
-      res.json('Journal deleted successfully.');
+    if (deleteResult.rows.length === 0) {
+      res.json("Journal deleted successfully.");
     }
-   
   } catch (error) {
     console.error(error);
-    res.status(500).json({ message: "Server error" });
+    res.json("Server error");
   }
 });
 
 // ========================== Journal Entires ================================
 
-// retrieve journal entries for a user
-app.get("/api/journal_entries/user/:userId", async (req, res) => {
-  const { userId } = req.params;
+// retrieve all journal entries
+app.get("/journals/journal_entries", async (req, res) => {
   try {
-    const result = await pool.query(
-      "SELECT journal_entries.*, trades.*, orders.* FROM journal_entries LEFT JOIN trades ON journal_entries.trade_id = trades.trade_id LEFT JOIN orders ON trades.order_id = orders.order_id WHERE journal_entries.user_id = $1",
-      [userId]
-    );
-    res.status(200).json(result.rows);
+    const result = await pool.query("SELECT * FROM journal_entries");
+
+    if(!result.rows[0]){
+      return res.json("Journal entires not found");
+    }
+
+    res.json(result.rows);
+
   } catch (error) {
-    res.status(500).json({ error: error.message });
+    console.error(error);
+    res.json("Server error");
+  }
+});
+
+// retrieve specific journal entry
+app.get("/journals/journal_entries/:entry_id", async (req, res) => {
+  const {entry_id} = req.params;
+
+  if (isNaN(parseInt(entry_id))) {
+    return res.json("Invalid entry ID");
+  }
+  try {
+
+    const result = await pool.query('SELECT * FROM journal_entries WHERE entry_id = $1', [entry_id]);
+
+    if (!result.rows[0]){
+      return res.json("no entires found");
+    }
+
+    res.json(result.rows);
+
+
+  } catch (error) {
+    console.error(error);
+    res.json("Server error");
   }
 });
 
 // Create a journal entry
-app.post("/api/journal_entries", async (req, res) => {
+app.post("/journals/journal_entries", async (req, res) => {
+  const {journal_id, trade_id, title, content, market_conditions, mood, img, entry_date} = req.body;
+
+  if (!journal_id || !trade_id || !title) {
+    return res.json(
+      "Missing required fields: user_id and title must be provided."
+    );
+  }
+
+  try {
+    const result = await pool.query('INSERT INTO journal_entries(journal_id, trade_id, title, content, market_conditions, mood, img, entry_date) VALUES($1, $2, $3, $4, $5, $6, $7, $8) RETURNING *', [journal_id, trade_id, title, content, market_conditions, mood, img, entry_date || new Date()])
+
+
+    res.json({
+      message: 'Journal Entry created Successfully',
+      data: result.rows
+    })
+
+
+  } catch (error) {
+    console.error(error);
+    res.json("Server error");
+  }
+});
+
+// update journal entries
+app.put("/journals/journal_entries/:entry_id", async (req, res) => {
+  const {entry_id} = req.params;
+  const {journal_id, trade_id, title, content, market_conditions, mood, img, entry_date} = req.body;
+  try {
+
+    
+
+
+  } catch (error) {
+    console.error(error);
+    res.json("Server error");
+  }
+});
+
+// Delete an entry
+app.delete("/journals/journal_entries/:entry_id", async (req, res) => {
+  const {entry_id} = req.params;
+
+  if (isNaN(parseInt(entry_id))) {
+    return res.json("Invalid entry ID");
+  }
+
+  try {
+
+    const checkResult = await pool.query('SELECT * FROM journal_entries WHERE entry_id =$1', [entry_id]);
+
+    if (checkResult.rows.length === 0){
+      return res.json("Entry ID not isn't present");
+    }
+    const deleteResult = await pool.query('DELETE FROM journal_entries WHERE entry_id = $1', [entry_id]);
+    
+    if (deleteResult.rows.length === 0) {
+      res.json("Journal entry deleted successfully.");
+    }
+
+
+  } catch (error) {
+    console.error(error);
+    res.json("Server error");
+  }
+});
+
+app.listen(port, () => {
+  console.log(`Listening on port ${port}.`);
+});
+
+/*
+
+// Create a journal entry
+app.post("/journal/journal_entries", async (req, res) => {
   const {
     user_id,
     trade_id,
@@ -286,8 +398,8 @@ app.post("/api/journal_entries", async (req, res) => {
   }
 });
 
-// update journal entries for a user
-app.put("/api/journal_entries/:entryId", async (req, res) => {
+// update journal entries
+app.put("/journal/journal_entries/:entryId", async (req, res) => {
   const { entryId } = req.params;
   const { title, content, mood, market_conditions } = req.body;
   try {
@@ -302,7 +414,7 @@ app.put("/api/journal_entries/:entryId", async (req, res) => {
 });
 
 // Delete an entry
-app.delete("/api/journal_entries/:entryId", async (req, res) => {
+app.delete("/journal/journal_entries/:entryId", async (req, res) => {
   const { entryId } = req.params;
   try {
     await pool.query("DELETE FROM journal_entries WHERE entry_id = $1", [
@@ -314,6 +426,4 @@ app.delete("/api/journal_entries/:entryId", async (req, res) => {
   }
 });
 
-app.listen(port, () => {
-  console.log(`Listening on port ${port}.`);
-});
+*/
