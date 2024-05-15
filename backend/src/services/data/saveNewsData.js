@@ -1,7 +1,7 @@
-import pool from "../db.js";
+import pool from "../../db.js";
 
 // Function to save new data to the database
-async function saveNewData(dataList) {
+async function saveNewsData(dataList) {
   console.log("Received data for saving");
   const client = await pool.connect();
 
@@ -46,4 +46,10 @@ async function saveNewData(dataList) {
   }
 }
 
-export { saveNewData };
+
+
+
+
+
+
+export { saveNewsData };

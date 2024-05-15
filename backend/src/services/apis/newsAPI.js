@@ -1,7 +1,7 @@
 import axios from "axios";
 
-// Function to fetch data from the API
-async function fetchDataFromAPI() {
+// Function to fetch news data from the API
+async function fetchNewsDataFromAPI() {
   try {
     console.log("Fetching data from API...");
     const [service1Response, service2Response, forexResponse] =
@@ -114,4 +114,4 @@ async function fetchDataFromAPI() {
   }
 }
 
-export { fetchDataFromAPI };
+export { fetchNewsDataFromAPI };
