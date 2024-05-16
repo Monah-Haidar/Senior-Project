@@ -5,7 +5,6 @@ import jwt from "jsonwebtoken";
 const createJournal = async (req, res) => {
   try {
     await Journal.sync();
-    const user_id = req.user_id;
     const {title, description} = req.body;
     const existingJournal = await Journal.findOne({where:{title}});
 
@@ -25,8 +24,16 @@ const createJournal = async (req, res) => {
 
 const getJournal = async (req, res) => {
   try {
+    const journal_id = req.params.id;
+    const journal = await Journal.findByPk(journal_id);
 
+    if (!journal){
+      return res.status(404).json({"message": "Journal not found"});
+    }
 
+    return res.status(200).json({status:"Journal Retrieved Successfully",
+      data: journal
+    })
 
 
 
