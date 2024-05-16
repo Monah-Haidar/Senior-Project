@@ -12,3 +12,5 @@ router.post('/create', createJournal);
 
 router.put('/:id', updateJournal);
 router.delete('/:id', deleteJournal);
+
+export default router;
