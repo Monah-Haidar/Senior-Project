@@ -1,5 +1,6 @@
 import { Sequelize, DataTypes } from "sequelize";
 import sequelize from './config.js';
+import Account from "./account.js";
 
 // user schema
 const User = sequelize.define('User', {
@@ -48,6 +49,10 @@ const User = sequelize.define('User', {
         allowNull:true
     }
 })
+
+// link user to account
+User.hasMany(Account)
+Account.belongsTo(User, { foreignKey: "user_id" });
 
 // exports
 export default User;

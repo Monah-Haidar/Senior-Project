@@ -1,8 +1,8 @@
-import { getMarketPriceFromAPI } from "../controllers/marketsController.js";
-import express from 'express';
+// import { getMarketPriceFromAPI } from "../controllers/marketsController.js";
+// import express from 'express';
 
-const router = express.Router();
+// const router = express.Router();
 
-router.get('/', getMarketPriceFromAPI);
+// router.get('/', getMarketPriceFromAPI);
 
-export default router;
+// export default router;

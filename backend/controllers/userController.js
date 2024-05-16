@@ -2,9 +2,6 @@ import User from '../models/user.js';
 import bcrypt from 'bcrypt';
 import jwt from "jsonwebtoken";
 
-
-
-
 // authentication token manager
 const generateToken = (payload) => {
   return jwt.sign(payload, process.env.JWT_SECRET, { expiresIn: "30d" });
@@ -27,7 +24,7 @@ const createUser = async(req,res) =>{
     }
     
     }catch(err){
-        res.status(500).json({"message":"Internal Server Error"})
+        res.status(500).json({"message":err.message})
     }
     
 }
