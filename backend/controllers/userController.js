@@ -82,6 +82,7 @@ const updateUser = async (req,res)=>{
     if (!user){
         res.status(404).json({"message":"User not found"})
     }else{
+        // TODO: validate password before passing to hash
         const hashPassword = await bcrypt.hash(password, 10);
         user.update({ first_name, last_name, hashPassword });
         res.json(user);

@@ -5,19 +5,20 @@ import jwt from "jsonwebtoken";
 const createJournal = async (req, res) => {
   try {
     await Journal.sync();
+    const user_id = req.user_id;
     const {title, description} = req.body;
-    const existingJournal = await Journal.findOne({where:"title"});
+    const existingJournal = await Journal.findOne({where:{title}});
 
     if (existingJournal != null){
-      res.status(400).json({message: "Journal Already Exists"});
+      return res.status(400).json({message: "Journal Already Exists"});
     }
 
-    const journal = await Journal.create({title, description});
+    const journal = await Journal.create({title, description, user_id});
 
     return res.status(200).json({message: "Journal Created Successfully", data: journal});
 
-
   } catch (err) {
+    console.error(err);
     res.status(500).json({ message: "Internal Server Error" });
   }
 };
@@ -60,10 +61,15 @@ const updateJournal = async (req, res) => {
 
 const deleteJournal = async (req, res) => {
   try {
+    const journal_id = req.params.id;
+    const journal = await Journal.findByPk(journal_id);
 
+    if(!journal){
+      return res.status(404).json({"message":"Journal not found"});
+    }
 
-
-    
+    await journal.destroy();
+    return res.status(200).json({"message":"Journal deleted"})
   } catch (err) {
     res.status(500).json({ message: "Internal Server Error" });
   }
