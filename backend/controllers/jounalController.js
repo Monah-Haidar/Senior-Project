@@ -1,6 +1,4 @@
 import Journal from "../models/journal.js";
-import bcrypt from "bcrypt";
-import jwt from "jsonwebtoken";
 
 const createJournal = async (req, res) => {
   try {
