@@ -3,7 +3,7 @@ import Instrument from "./instrument.js";
 import sequelize from './config.js';
 
 // user schema
-const MarketNew = sequelize.define("MarketNew", {
+const MarketNews = sequelize.define("MarketNew", {
   news_id: {
     type: DataTypes.INTEGER,
     primaryKey: true,
@@ -31,6 +31,6 @@ const MarketNew = sequelize.define("MarketNew", {
   }
 });
 
-MarketNew.belongsTo(Instrument, {foreignKey:"instrument_id"})
+MarketNews.belongsTo(Instrument, {foreignKey:"instrument_id"})
 // exports
-export default MarketNew;
+export default MarketNews;
