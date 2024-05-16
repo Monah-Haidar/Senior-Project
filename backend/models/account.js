@@ -1,7 +1,5 @@
 import { Sequelize, DataTypes } from "sequelize";
-import User from "./user.js";
 import sequelize from './config.js';
-
 
 
 // user schema
@@ -14,6 +12,7 @@ const Account = sequelize.define("Account", {
   account_type: {
     type: DataTypes.STRING,
     allowNull: false,
+    defaultValue:"Future"
   },
   total_balance: {
     type: DataTypes.NUMBER,
@@ -26,7 +25,6 @@ const Account = sequelize.define("Account", {
 });
 
 // Account.belongsTo(User, { foreignKey: "user_id" });
-Account.hasMany(User)
 
 // exports
 export default Account;
