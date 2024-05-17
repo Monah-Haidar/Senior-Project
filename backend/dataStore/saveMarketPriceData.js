@@ -1,55 +1,50 @@
-// import pool from "../../db.js";
+import Instrument from "../models/instrument.js";
 
-// // Function to save new data to the database
-// async function saveMarketPriceData(dataList) {
-//   console.log("Received data for saving");
-//   const client = await pool.connect();
+// Function to save new data to the database
+const saveMarketPriceData = async (dataList) => {
+  try {
+    console.log("Received data for saving");
+    await Instrument.sync();
 
-//   try {
-//     await client.query("BEGIN");
+    for (const data of dataList) {
+        const {name, symbol } = data;
+    //   const [instance, created] = await Instrument.upsert(
+    //     {
+    //       rank: data.rank,
+    //       name: data.name,
+    //       symbol: data.symbol,
+    //       price: data.price,
+    //       instrument_type: data.instrumentType,
+    //       percentChange24h: data.percentChange24h,
+    //       volumeChange24h: data.volumeChange24h,
+    //       marketCap: data.marketCap,
+    //       circulatingSupply: data.circulatingSupply,
+    //       totalSupply: data.totalSupply,
+    //     },
+    //     {
+    //       returning: true, // This will return the updated instance
+    //     }
+    //   );
+        const d = await Instrument.findOne({where:{name, symbol}});
 
-//     for (const data of dataList) {
-//       const res = await client.query(
-//         "SELECT * FROM instruments WHERE instrument_id = $1 AND symbol = $2",
-//         [data.instrument_id, data.symbol]
-//       );
-//       console.log("Query executed. Rows found:", res.rows.length);
-
-//       if (res.rows.length === 0) {
-//         // If no existing record, insert new data
-//         await client.query(
-//           "INSERT INTO market_news (title, content, related_instruments, publication_time, source, img, sentiment, category) VALUES ($1, $2, $3, $4, $5, $6, $7, $8)",
-//           [
-//             data.title,
-//             data.content,
-//             data.related_instruments,
-//             data.publication_time,
-//             data.source,
-//             data.img,
-//             data.sentiment,
-//             data.category,
-//           ]
-//         );
-//         console.log("New data inserted.");
-//       } else {
-//         console.log("Data already exists, no insertion needed.");
-//       }
-//     }
-//     await client.query("COMMIT");
-//     console.log("Transaction committed successfully.");
-//   } catch (error) {
-//     console.error("Failed to save data:", error);
-//     await client.query("ROLLBACK");
-//     throw error;
-//   } finally {
-//     client.release();
-//   }
-// }
+        return d;
 
 
 
 
 
+      if (created) {
+        console.log(`New entry created for symbol: ${data.symbol}`);
+      } else {
+        console.log(
+          `Entry already exists for symbol: ${data.symbol}, no need to insert.`
+        );
+      }
+    }
+  } catch (err) {
+    console.error(err);
+    // res.status(500).json({ message: "Internal Server Error" });
+  }
+};
 
-
-// export { saveMarketPriceData };
+export { saveMarketPriceData };

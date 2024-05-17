@@ -9,18 +9,49 @@ const Instrument = sequelize.define("Instrument", {
     primaryKey: true,
     autoIncrement: true,
   },
+  rank: {
+    type: DataTypes.INTEGER,
+    allowNull: false,
+  },
+  name: {
+    type: DataTypes.STRING,
+    allowNull: false,
+  },
   symbol: {
     type: DataTypes.CHAR(3),
     allowNull: false,
+    unique: true
   },
-  description: {
-    type: DataTypes.STRING,
+  price: {
+    type: DataTypes.FLOAT,
     allowNull: false,
   },
   instrument_type: {
     type: DataTypes.STRING,
     allowNull: false,
   },
+
+  percentChange24h: {
+    type: DataTypes.FLOAT,
+    allowNull: false,
+  },
+  volumeChange24h: {
+    type: DataTypes.FLOAT,
+    allowNull: false,
+  },
+  marketCap: {
+    type: DataTypes.FLOAT,
+    allowNull: false,
+  },
+  circulatingSupply: {
+    type: DataTypes.FLOAT,
+    allowNull: false,
+  },
+  total_supply: {
+    type: DataTypes.FLOAT,
+    allowNull: false,
+  },
+
 });
 
 

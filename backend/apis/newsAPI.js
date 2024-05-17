@@ -90,18 +90,13 @@ const getNewsDataFromAPI = async (req, res) => {
     }
 
     console.log("Data fetched");
-    // return [
-    //   ...serviceFilteredData1,
-    //   ...serviceFilteredData2,
-    //   ...forexFilteredData,
-    // ];
     const data = [
         ...serviceFilteredData1,
         ...serviceFilteredData2,
         ...forexFilteredData,
       ];
 
-    res.json(data);
+    return data;
   } catch (err) {
     console.error(err);
     res.status(500).json({ message: "Internal Server Error" });

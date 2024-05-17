@@ -27,10 +27,14 @@ const getMarketPriceFromAPI = async (req, res) => {
       volumeChange24h: coin.quote.USD.volume_change_24h,
       marketCap: coin.quote.USD.market_cap,
       circulatingSupply: coin.circulating_supply,
+      totalSupply: coin.total_supply,
+      instrumentType: 'crypto'
     }));
 
     return [filteredData];
-  
+    //res.json(response.data);
+    // res.json(filteredData);
+
   } catch (err) {
     console.error(err);
     res.status(500).json({ message: "Internal Server Error" });
