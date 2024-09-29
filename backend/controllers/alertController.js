@@ -38,58 +38,69 @@ const sendAlert = async (req, res) => {
 
     await sendEmail(to, subject, html);
 
-    res.status(200).json({ message: "Email sent successfully" });
+    return res.status(200).json({ message: "Email sent successfully" });
   } catch (err) {
+    console.error(err);
     res.status(500).json({ message: err.message });
   }
 };
 
 // create alert in database
 const createAlert = async (req, res) => {
-  await Alert.sync();
+  // await Alert.sync();
 
-  const user_id = req.user_id;
-  const numberOfDays = req.body.expiration_date;
+  try {
+    const { message, threshold, expiration_date } = req.body;
 
-  const expirationDate = new Date(
-    Date.now() + numberOfDays * 24 * 60 * 60 * 1000
-  );
+    const user_id = req.user_id;
+    const numberOfDays = expiration_date;
 
-  const account = await Account.findOne({
-    where: { user_id: user_id, account_type: "Future" },
-  });
+    const expirationDate = new Date(
+      Date.now() + numberOfDays * 24 * 60 * 60 * 1000
+    );
 
-  const alert = await Alert.create({
-    message: req.body.message,
-    threshold: req.body.threshold,
-    status: "active",
-    expiration_date: expirationDate,
-    account_id: account.account_id,
-  });
+    const account = await Account.findOne({
+      where: { user_id: user_id, account_type: "Futures" },
+    });
 
-  res.status(200).json({
-    message: "Alert created successfully",
-    data: alert,
-  });
+    const alert = await Alert.create({
+      message: message,
+      threshold,
+      status: "active",
+      expiration_date,
+      account_id: account.account_id,
+    });
+
+    return res.status(200).json({
+      message: "Alert created successfully",
+      data: alert,
+    });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ message: err.message });
+  }
 };
 
 // retrieve alerts from database
 const getAlerts = async (req, res) => {
   try {
-    // await Alert.sync();
+    // await Alert.sync({ force: true });
     const user_id = req.user_id;
     const account = await Account.findOne({
-      where: { user_id: user_id, account_type: "Future" },
+      where: { user_id: user_id, account_type: "Futures" },
     });
+
+    console.log(account.account_id);
     if (account == null) {
-      res.status(404).json({ message: "Account not found" });
+      return res.status(404).json({ message: "Account not found" });
     }
     const alerts = await Alert.findAll({
       where: { account_id: account.account_id, status: "active" },
     });
 
-    res.status(200).json({ alerts: alerts });
+    return res.status(200).json({ alerts: alerts });
   } catch (err) {
+    console.error("Get Alerts Error:", err);
     res.status(500).json({ message: err.message });
   }
 };

@@ -5,7 +5,9 @@ import { sendEmail } from "./alertController.js";
 import { createAccountFromUser } from "./accountsController.js";
 
 const generateAccessToken = (payload) => {
-  return jwt.sign(payload, process.env.ACCESS_TOKEN_SECRET, { expiresIn: "1hr" });
+  return jwt.sign(payload, process.env.ACCESS_TOKEN_SECRET, {
+    expiresIn: "1hr",
+  });
 };
 
 const generateRefreshToken = (payload) => {
@@ -71,20 +73,21 @@ const loginUser = async (req, res) => {
     const refreshToken = generateRefreshToken({ user_id: user.user_id });
 
     await User.update(
-      {refresh_token: refreshToken},
+      { refresh_token: refreshToken },
       {
         where: {
-          email: user.email
-        }
+          email: user.email,
+        },
       }
-      );
+    );
 
-    
     const html = `<h1>A new login has been made</h1>`;
     await sendEmail(email, "Login", html);
 
     res.cookie("jwt", refreshToken, {
       httpOnly: true,
+      secure: true,
+      sameSite: "None",
       maxAge: 24 * 60 * 60 * 1000,
     });
 
@@ -109,8 +112,9 @@ const getUser = async (req, res) => {
       return res.status(404).json({ message: "User not found" });
     }
 
-    res.json(user);
+    return res.json(user);
   } catch (err) {
+    console.error("Error getting user:", err);
     res.status(500).json({ message: err.message });
   }
 };
@@ -119,15 +123,16 @@ const getAllUsers = async (req, res) => {
   try {
     const users = await User.findAll();
 
-    res.json(users);
+    return res.json(users);
   } catch (err) {
+    console.error("Error getting users:", err);
     res.status(500).json({ message: err.message });
   }
 };
 
 const updateUser = async (req, res) => {
   try {
-    const user_id = req.user_id
+    const user_id = req.user_id;
 
     const { first_name, last_name, password } = req.body;
 
@@ -141,21 +146,22 @@ const updateUser = async (req, res) => {
 
     if (first_name) {
       user.update({ first_name });
-      res.json({ message: "First name updated" });
+      return res.json({ message: "First name updated" });
     }
 
     if (last_name) {
       user.update({ last_name });
-      res.json({ message: "Last name updated" });
+      return res.json({ message: "Last name updated" });
     }
 
     if (password) {
       const salt = await bcrypt.genSalt(10);
       const hashPassword = await bcrypt.hash(password, salt);
       user.update({ password: hashPassword });
-      res.json({ message: "Password updated" });
+      return res.json({ message: "Password updated" });
     }
   } catch (err) {
+    console.error("Error updating user:", err);
     res.status(500).json({ message: err.message });
   }
 };
@@ -163,8 +169,6 @@ const updateUser = async (req, res) => {
 const deleteUser = async (req, res) => {
   try {
     const user_id = req.user_id;
-
-    // const id = req.params.id;
 
     const user = await User.findByPk(user_id);
 
@@ -176,14 +180,34 @@ const deleteUser = async (req, res) => {
 
     return res.status(200).json({ message: "User deleted" });
   } catch (err) {
+    console.error("Error deleting user:", err);
     res.status(500).json({ message: err.message });
   }
 };
 
-// const logout = (req, res) => {
-//   res.clearCookie("token", { httpOnly: true });
-//   res.json({ message: "Logout successful" });
-// };
+const logout = async (req, res) => {
+  const cookies = req.cookies;
+  if (!cookies?.jwt) return res.sendStatus(204); //No content
+
+  const refreshToken = cookies.jwt;
+
+  const user = await User.findOne({ where: { refresh_token: refreshToken } });
+
+  if (!user) {
+    res.clearCookie("jwt", { httpOnly: true, secure: true, sameSite: "None" });
+    return res.sendStatus(204);
+  }
+
+  await User.update(
+    { refresh_token: null },
+    { where: { user_id: user.user_id } }
+  );
+
+  res.clearCookie("jwt", { httpOnly: true, secure: true, sameSite: "None"});
+
+  res.sendStatus(204);
+  // console.log("Logged out successfully");
+};
 
 export {
   createUser,
@@ -192,5 +216,5 @@ export {
   getAllUsers,
   updateUser,
   deleteUser,
-  //   logout,
+  logout,
 };

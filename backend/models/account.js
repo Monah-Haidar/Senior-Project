@@ -1,7 +1,5 @@
 import { DataTypes } from "sequelize";
 import sequelize from "./config.js";
-import User from "./user.js";
-// import Order from "./order.js";
 
 const Account = sequelize.define("Account", {
   account_id: {
@@ -26,7 +24,5 @@ const Account = sequelize.define("Account", {
     defaultValue: "USD",
   },
 });
-
-//Account.belongsTo(User, { foreignKey: "user_id" });
 
 export default Account;

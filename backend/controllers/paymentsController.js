@@ -19,7 +19,7 @@ const createPayment = async (req, res) => {
     });
 
     // Step 2: Send the paymentIntentId to the frontend
-    res.status(200).send({
+    return res.status(200).send({
       message: "Payment Intent created successfully",
       paymentIntentId: paymentIntent.id,
     });
@@ -44,7 +44,8 @@ const deposit = async (req, res) => {
       return res.status(400).json({ message: "Invalid deposit details" });
     }
 
-    account.total_balance += amount;
+    account.total_balance += Number(amount);
+    console.log("Accoutn total balance", account.total_balance);
 
     await account.save();
 
@@ -60,14 +61,13 @@ const deposit = async (req, res) => {
     // log transaction
     logTransaction(
       amount,
-      new Date(),
-      "success",
-      "deposit",
-      "stripe",
+      "Success",
+      "Deposit",
+      "Stripe",
       account.account_id
     );
 
-    res.status(200).json({
+    return res.status(200).json({
       message: "Deposit successful",
       balance: account.total_balance,
     });
@@ -116,7 +116,7 @@ const withdraw = async (req, res) => {
       account.account_id
     );
 
-    res.status(200).json({
+    return res.status(200).json({
       message: "Withdrawal successful",
       balance: account.total_balance,
     });

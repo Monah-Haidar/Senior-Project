@@ -1,8 +1,6 @@
 import { DataTypes } from "sequelize";
 import sequelize from "./config.js";
-import Account from "./account.js";
 
-// user schema
 const User = sequelize.define("User", {
   user_id: {
     type: DataTypes.INTEGER,
@@ -50,10 +48,6 @@ const User = sequelize.define("User", {
     allowNull: true,
     defaultValue: null,
   },
-});
-
-User.hasMany(Account, {
-  foreignKey: "user_id",
 });
 
 export default User;

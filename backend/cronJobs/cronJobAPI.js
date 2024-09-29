@@ -8,14 +8,15 @@ import getPriceFromAPI from "../apis/priceAPI.js";
 
 function cronJobAPI() {
   
-  cron.schedule("*/5 * * * *", async () => {
+  cron.schedule("*/1 * * * *", async () => {
+    console.log("Running fetch every 1 minutes");
     try {
       const priceData = await getPriceFromAPI();
       await savePriceData(priceData);
 
-      const newsData = await getNewsFromAPI();
-      await saveNewsData(newsData);
-     
+      // const newsData = await getNewsFromAPI();
+      // await saveNewsData(newsData);
+      console.log("Successfully fetched and saved data");
     } catch (error) {
       console.error("Failed during scheduled task:", error);
     }

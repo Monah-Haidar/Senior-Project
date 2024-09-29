@@ -1,7 +1,5 @@
 import { DataTypes } from "sequelize";
 import sequelize from "./config.js";
-import Account from "./account.js";
-
 
 const Transaction = sequelize.define("Transaction", {
   transaction_id: {
@@ -20,19 +18,20 @@ const Transaction = sequelize.define("Transaction", {
     defaultValue: DataTypes.NOW,
   },
   status: {
-    type: DataTypes.STRING,
+    type: DataTypes.ENUM,
+    values: ["Success", "Failed"],
     allowNull: false,
   },
   type: {
-    type: DataTypes.STRING, 
+    type: DataTypes.ENUM,
+    values: ["Deposit", "Withdrawal"],
     allowNull: false,
   },
   payment_method: {
-    type: DataTypes.STRING,
+    type: DataTypes.ENUM,
+    values: ["Bank Transfer", "Credit Card", "Paypal", "Stripe"],
     allowNull: false,
   },
 });
-
-//Transaction.belongsTo(Account, { foreignKey: "account_id" });
 
 export default Transaction;

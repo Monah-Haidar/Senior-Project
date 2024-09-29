@@ -1,15 +1,63 @@
 import Order from "../models/order.js";
 import Account from "../models/account.js";
+import Instrument from "../models/instrument.js";
 
 const createOrder = async (req, res) => {
   try {
-    await Order.sync();
+    const user_id = req.user_id;
 
+    const { quantity, stop_loss_price, take_profit_price } = req.body;
+
+    const account = await Account.findOne({
+      where: { user_id: user_id, account_type: "Futures" },
+    });
+
+    const btc = await Instrument.findOne({ where: { symbol: "BTC" } });
+
+    if (!btc) {
+      return res.status(404).json({ message: "BTC not found" });
+    }
+
+    const btcPrice = btc.price;
+
+    if (!account) {
+      return res.status(404).json({ message: "Account not found" });
+    }
+
+    if (account.total_balance < quantity) {
+      return res.status(400).json({ message: "Insufficient balance" });
+    }
+
+    await account.update({ total_balance: account.total_balance - quantity });
+
+    const order = await Order.create({
+      order_type: "Buy",
+      order_status: "Open",
+      quantity,
+      entry_price: btcPrice,
+      stop_loss_price,
+      take_profit_price,
+      creation_time: Date.now(),
+      account_id: account.account_id,
+    });
+
+    return res.json({
+      message: "Order created",
+      data: order,
+      "total balance": account.total_balance,
+    });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ message: err.message });
+  }
+};
+
+const createLimitOrder = async (req, res) => {
+  try {
+    // await Order.sync({ force: true });
     const user_id = req.user_id;
 
     const {
-      order_type,
-      order_status,
       quantity,
       entry_price,
       stop_loss_price,
@@ -17,35 +65,47 @@ const createOrder = async (req, res) => {
       pending_order_value,
     } = req.body;
 
-    const quantity_in_usd = quantity * entry_price;
-
     const account = await Account.findOne({
       where: { user_id: user_id, account_type: "Futures" },
     });
 
+    const btc = await Instrument.findOne({ where: { symbol: "BTC" } });
+
+    if (!btc) {
+      return res.status(404).json({ message: "BTC not found" });
+    }
+
+    const btcPrice = btc.price;
+    
     if (!account) {
       return res.status(404).json({ message: "Account not found" });
     }
 
-    if (account.total_balance < quantity_in_usd) {
+    if (account.total_balance < quantity) {
       return res.status(400).json({ message: "Insufficient balance" });
     }
 
-    await account.update({ total_balance: account.total_balance - quantity_in_usd });
-
     const order = await Order.create({
-      order_type,
-      order_status,
-      quantity: quantity_in_usd,
+      order_type: "Buy",
+      order_status: "Pending",
+      quantity,
       entry_price,
       stop_loss_price,
       take_profit_price,
       pending_order_value,
-      creation_time: Date.now(),  
+      creation_time: Date.now(),
       account_id: account.account_id,
     });
 
-    return res.json({ message: "Order created", data: order , "total balance": account.total_balance});
+
+
+    // await account.update({ total_balance: account.total_balance - quantity });
+
+    return res.json({
+      message: "Order created",
+      data: order,
+      "total balance": account.total_balance,
+    });
   } catch (err) {
     console.error(err);
     res.status(500).json({ message: err.message });
@@ -139,7 +199,8 @@ const closeOrder = async (req, res) => {
     const order_open_value = order.quantity * order.entry_price;
     const profit_loss_amount = order_close_value - order_open_value;
 
-    const account_new_balance = account.total_balance + profit_loss_amount + order_open_value;
+    const account_new_balance =
+      account.total_balance + profit_loss_amount + order_open_value;
 
     await account.update({
       total_balance: account_new_balance,
@@ -182,4 +243,4 @@ const getOrder = async (req, res) => {
   }
 };
 
-export { createOrder, modifyOrder, closeOrder, getAllOrders };
+export { createOrder, createLimitOrder, modifyOrder, closeOrder, getAllOrders };

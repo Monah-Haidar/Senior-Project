@@ -1,8 +1,6 @@
 import { DataTypes } from "sequelize";
 import sequelize from "./config.js";
-import User from "./user.js";
 
-// user schema
 const JournalEntrie = sequelize.define("JournalEntrie", {
   entry_id: {
     type: DataTypes.INTEGER,
@@ -33,7 +31,7 @@ const JournalEntrie = sequelize.define("JournalEntrie", {
       "Optimistic",
       "Doubtful",
       "Calm",
-      "Impatient"
+      "Impatient",
     ],
     allowNull: false,
   },
@@ -50,7 +48,5 @@ const JournalEntrie = sequelize.define("JournalEntrie", {
     allowNull: true,
   },
 });
-
-//JournalEntrie.belongsTo(User, { foreignKey: "user_id" });
 
 export default JournalEntrie;

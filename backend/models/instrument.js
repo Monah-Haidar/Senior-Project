@@ -23,7 +23,7 @@ const Instrument = sequelize.define("Instrument", {
     type: DataTypes.FLOAT,
     allowNull: false,
   },
-  volume_24h:{
+  volume_24h: {
     type: DataTypes.STRING,
     allowNull: false,
   },

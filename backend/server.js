@@ -3,6 +3,7 @@ import express from "express";
 import sequelize from "./models/config.js";
 import bodyParser from "body-parser";
 import cookieParser from "cookie-parser";
+import cors from "cors";
 
 import priceAPI from "./routes/priceRoute.js";
 import newsAPI from "./routes/newsRoute.js";
@@ -11,20 +12,34 @@ import journalEntries from "./routes/journalRoute.js";
 import transactions from "./routes/transactionsRoute.js";
 import alerts from "./routes/alertsRoute.js";
 import users from "./routes/usersRoute.js";
+import accounts from "./routes/accountsRoute.js";
 import orders from "./routes/ordersRoute.js";
+import refreshToken from "./routes/refreshRoute.js";
+
+import verifyJWT from "./middleware/verifyJWT.js";
 
 import cronJobAPI from "./cronJobs/cronJobAPI.js";
+
+import { setupAssociations } from "./models/associations.js";
 
 const app = express();
 
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
 app.use(cookieParser());
+app.use(
+  cors({
+    origin: "http://localhost:5173",
+    credentials: true,
+  })
+);
 
 app.get("/", (req, res) => {
   res.send("Hello World!");
 });
 
+// setup db associations
+setupAssociations();
 
 // Test DB Connection
 try {
@@ -37,7 +52,6 @@ try {
 
 
 // Cron Job
-// console.log("Running fetch every 1 minutes");
 // cronJobAPI();
 
 
@@ -45,12 +59,19 @@ try {
 app.use("/api/price", priceAPI);
 app.use("/api/news", newsAPI);
 app.use("/articles", articles);
-app.use("/journalEntries", journalEntries);
-app.use("/user", users);
-app.use("/order", orders);
+app.use("/refresh", refreshToken);
 
-app.use("/transactions", transactions);
-app.use("/alerts", alerts);
+// not all routes are protected
+app.use("/user", users);
+
+app.use(verifyJWT);
+// protected routes
+app.use("/account", accounts);
+app.use("/transaction", transactions);
+app.use("/order", orders);
+app.use("/alert", alerts);
+app.use("/journalEntries", journalEntries);
+
 
 
 app.listen(process.env.PORT, () => {

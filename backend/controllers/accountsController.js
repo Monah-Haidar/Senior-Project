@@ -18,7 +18,6 @@ const createAccountFromUser = async (user_id) => {
   } catch (err) {
     console.error(err);
     res.status(500).json({ "message from createAccountFromUser": err.message });
-    ;
   }
 };
 
@@ -43,6 +42,7 @@ const updateBalance = async (req, res) => {
       account: account,
     });
   } catch (err) {
+    console.error(err);
     res.status(500).json({ message: err.message });
   }
 };
@@ -50,6 +50,8 @@ const updateBalance = async (req, res) => {
 const getBalance = async (req, res) => {
   try {
     const user_id = req.user_id;
+
+    // const user_id = 1;
 
     const account = await Account.findOne({
       where: { user_id: user_id, account_type: "Futures" },
@@ -59,9 +61,12 @@ const getBalance = async (req, res) => {
       return res.status(404).json({ message: "Account not found" });
     }
 
-    return res.json({ account: account, message: "success" });
+
+
+    return res.json({ "Total Balance": account.total_balance, message: "success" });
     
   } catch (err) {
+    console.error(err);
     res.status(500).json({ message: err.message });
   }
 };

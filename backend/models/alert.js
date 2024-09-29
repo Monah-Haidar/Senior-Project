@@ -1,7 +1,5 @@
 import { DataTypes } from "sequelize";
 import sequelize from "./config.js";
-import Account from "./account.js";
-import Instrument from "./instrument.js";
 
 const Alert = sequelize.define("Alert", {
   alert_id: {
@@ -27,8 +25,5 @@ const Alert = sequelize.define("Alert", {
   },
 });
 
-// Alert.belongsTo(Account, {foreignKey:"account_id"})
-//Alert.belongsToMany(Instrument, {through: "instrument_id"})
 
-// exports
 export default Alert;

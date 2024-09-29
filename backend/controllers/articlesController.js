@@ -3,7 +3,7 @@ import Article from "../models/article.js";
 const getAllArticles = async (req, res) => {
   try {
     const articles = await Article.findAll();
-    res.json(articles);
+    return res.json(articles);
   } catch (err) {
     res.status(500).json({ message: err.message });
   }

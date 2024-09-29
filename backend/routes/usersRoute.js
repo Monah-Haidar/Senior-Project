@@ -6,20 +6,20 @@ import {
   getAllUsers,
   updateUser,
   deleteUser,
-//   logout,
+  logout,
 } from "../controllers/usersController.js";
-import authenticateUser from "../middleware/authenticateUser.js";
+import verifyJWT from "../middleware/verifyJWT.js";
 
 const router = express.Router();
 
-router.get("/", authenticateUser, getUser);
-router.get("/all", authenticateUser, getAllUsers);
+router.get("/", verifyJWT, getUser);
+router.get("/all", verifyJWT, getAllUsers);
 
 router.post("/create", createUser);
 router.post("/login", loginUser);
 
-router.put("/", authenticateUser, updateUser);
-router.delete("/", authenticateUser, deleteUser);
-// router.post("/logout", logout);
+router.put("/", verifyJWT, updateUser);
+router.delete("/", verifyJWT, deleteUser);
+router.get("/logout", logout);
 
 export default router;
