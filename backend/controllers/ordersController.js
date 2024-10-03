@@ -76,7 +76,7 @@ const createLimitOrder = async (req, res) => {
     }
 
     const btcPrice = btc.price;
-    
+
     if (!account) {
       return res.status(404).json({ message: "Account not found" });
     }
@@ -96,8 +96,6 @@ const createLimitOrder = async (req, res) => {
       creation_time: Date.now(),
       account_id: account.account_id,
     });
-
-
 
     // await account.update({ total_balance: account.total_balance - quantity });
 
@@ -175,42 +173,58 @@ const getAllOrders = async (req, res) => {
 
 const closeOrder = async (req, res) => {
   try {
-    const id = req.params.id;
+    const order_id = req.params.id;
 
     const user_id = req.user_id;
-
-    const { instrument_current_price_in_usd } = req.body;
 
     const account = await Account.findOne({
       where: { user_id: user_id, account_type: "Futures" },
     });
 
-    const order = await Order.findByPk(id);
-
     if (!account) {
       return res.status(404).json({ message: "Account not found" });
     }
+
+    const order = await Order.findByPk(order_id);
 
     if (!order) {
       return res.status(404).json({ message: "Order not found" });
     }
 
-    const order_close_value = order.quantity * instrument_current_price_in_usd;
-    const order_open_value = order.quantity * order.entry_price;
-    const profit_loss_amount = order_close_value - order_open_value;
+    const btc = await Instrument.findOne({ where: { symbol: "BTC" } });
+    if (!btc) {
+      return res.status(404).json({ message: "BTC not found" });
+    }
+    const btcPrice = btc.price;
 
-    const account_new_balance =
-      account.total_balance + profit_loss_amount + order_open_value;
+    console.log("BTC PRICE: ", btcPrice);
 
-    await account.update({
-      total_balance: account_new_balance,
-    });
 
     await order.update({
       order_status: "Closed",
-      stop_loss_price: null,
-      take_profit_price: null,
       completion_time: Date.now(),
+      close_price: btcPrice,
+    });
+
+
+    const orderValue = order.quantity / order.entry_price;
+
+    const newBalance = account.total_balance + orderValue * btcPrice;
+
+    await account.update({ total_balance: newBalance });
+
+    console.log(`Take profit or stop loss triggered at ${btcPrice}`);
+    
+
+    // const order_close_value = order.quantity * instrument_current_price_in_usd;
+    // const order_open_value = order.quantity * order.entry_price;
+    // const profit_loss_amount = order_close_value - order_open_value;
+
+    // const account_new_balance =
+    //   account.total_balance + profit_loss_amount + order_open_value;
+
+    await account.update({
+      total_balance: newBalance,
     });
 
     return res.json({

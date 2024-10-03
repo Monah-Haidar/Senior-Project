@@ -1,6 +1,8 @@
 import NewsCard from "../components/news/newsCard";
 import { useState, useEffect } from "react";
 
+import { ChevronRightIcon } from "@heroicons/react/24/outline";
+
 function MarketNews() {
   const [worldNews, setWorldNews] = useState([]);
   const [cryptoNews, setCryptoNews] = useState([]);
@@ -22,15 +24,15 @@ function MarketNews() {
 
     // fetch Gold News
     async function fetchGoldNews() {
-        try {
-          const response = await fetch("http://localhost:3500/api/news/gold");
-          const data = await response.json();
-          setGoldNews(data);
-          // console.log(data);
-        } catch (error) {
-          console.error("Error fetching gold news:", error);
-        }
+      try {
+        const response = await fetch("http://localhost:3500/api/news/gold");
+        const data = await response.json();
+        setGoldNews(data);
+        // console.log(data);
+      } catch (error) {
+        console.error("Error fetching gold news:", error);
       }
+    }
 
     // fetch Crypto News
     async function fetchCryptoNews() {
@@ -38,7 +40,7 @@ function MarketNews() {
         const response = await fetch("http://localhost:3500/api/news/crypto");
         const data = await response.json();
         setCryptoNews(data);
-        // console.log(data);
+        console.log(data);
       } catch (error) {
         console.error("Error fetching crypto news:", error);
       }
@@ -62,32 +64,32 @@ function MarketNews() {
   }, []);
 
   return (
-    <div className="pt-6 pb-6 flex flex-col items-center">
-      {/* News Header Text */}
-      <div className="flex flex-col items-center gap-3 mb-16">
-        <h1 className="text-3xl font-display">News</h1>
-        <h3 className="text-xl font-display">
+    <div className="mx-6">
+      <div className="mt-8 flex flex-col">
+        <h1 className="text-center text-7xl font-bold text-base-content">
+          News
+        </h1>
+        <h3 className="mt-5 flex flex-row justify-center text-2xl font-semibold">
           Don't miss a trick with global real-time updates
         </h3>
       </div>
 
-      {/* News Sections */}
-      <div className="flex w-11/12 gap-12 flex-col items-start justify-center">
+      <div className="mx-auto my-8 flex w-11/12 flex-col gap-12">
         <div className="flex flex-col gap-4">
-        {/* World News */}
-          <h2>World News</h2>
-          <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 xl:grid-cols-3 justify-items-center">
+          {/* World News */}
+          <h2 className="text-xl font-semibold">World News</h2>
+          <div className="grid grid-cols-1 justify-items-center gap-4 sm:grid-cols-2 xl:grid-cols-3">
             {worldNews.length > 0 ? (
               worldNews.map((item, index) => (
                 <NewsCard
                   key={index}
                   title={item.title}
                   body={item.body}
-                  newsSource={item.source}
-                  url={item.url}
-                  dateUploaded={item.dateUploaded}
-                  img={item.img}
-                  alt={item.alt}
+                  newsSource={item.source_name}
+                  url={item.news_url}
+                  dateUploaded={item.publication_time}
+                  img={item.img_url}
+                  alt={"image"}
                 />
               ))
             ) : (
@@ -98,8 +100,8 @@ function MarketNews() {
 
         {/* Gold News */}
         <div className="flex flex-col gap-4">
-          <h2>Gold News</h2>
-          <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 xl:grid-cols-3 justify-items-center">
+          <h2 className="text-xl font-semibold">Gold News</h2>
+          <div className="grid grid-cols-1 justify-items-center gap-4 sm:grid-cols-2 xl:grid-cols-3">
             {goldNews.length > 0 ? (
               goldNews.map((item, index) => (
                 <NewsCard
@@ -121,19 +123,19 @@ function MarketNews() {
 
         {/* Crypto News */}
         <div className="flex flex-col gap-4">
-          <h2>Crypto News </h2>
-          <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 xl:grid-cols-3 justify-items-center">
+          <h2 className="text-xl font-semibold">Crypto News</h2>
+          <div className="grid grid-cols-1 gap-x-14 gap-y-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
             {cryptoNews.length > 0 ? (
               cryptoNews.map((item, index) => (
                 <NewsCard
                   key={index}
                   title={item.title}
                   body={item.body}
-                  newsSource={item.source}
-                  url={item.url}
-                  dateUploaded={item.dateUploaded}
-                  img={item.img}
-                  alt={item.alt}
+                  newsSource={item.source_name}
+                  url={item.news_url}
+                  dateUploaded={item.publication_time}
+                  img={item.img_url}
+                  alt={"image"}
                 />
               ))
             ) : (
@@ -144,8 +146,8 @@ function MarketNews() {
 
         {/* Forex News*/}
         <div className="flex flex-col gap-4">
-          <h2>Forex News</h2>
-          <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 xl:grid-cols-3 justify-items-center">
+          <h2 className="text-xl font-semibold">Forex News</h2>
+          <div className="grid grid-cols-1 justify-items-center gap-4 sm:grid-cols-2 xl:grid-cols-3">
             {forexNews.length > 0 ? (
               forexNews.map((item, index) => (
                 <NewsCard

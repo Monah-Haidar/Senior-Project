@@ -17,7 +17,7 @@ const JournalEntrie = sequelize.define("JournalEntrie", {
   },
   entry_date: {
     type: DataTypes.DATE,
-    allowNull: false,
+    allowNull: true,
   },
   mood: {
     type: DataTypes.ENUM,

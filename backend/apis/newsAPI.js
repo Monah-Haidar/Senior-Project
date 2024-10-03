@@ -114,7 +114,7 @@ const getNewsFromAPI = async (req, res) => {
     ];
 
     //res.status(200).json(data);
-
+    console.log(data[0]);
     return data;
 
   } catch (err) {

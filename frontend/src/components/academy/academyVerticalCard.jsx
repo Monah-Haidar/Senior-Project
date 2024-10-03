@@ -3,42 +3,51 @@ import { ClockIcon } from "@heroicons/react/24/outline";
 function AcademyVerticalCard(props) {
   return (
     <>
-      <div className="bg-base-100 rounded-xl xl:max-w-[357px] shadow-md overflow-hidden max-w-5/12">
-        <div className="flex flex-col">
-          <div className="">
-            <img
-              className="object-cover h-full w-full rounded-2xl"
-              src={props.img}
-              alt={props.alt}
-            />
-          </div>
+      {/* <div className="flex flex-col rounded-xl shadow-md xl:max-w-[357px]"> */}
 
-          <div className="flex flex-col gap-10 p-8">
-            <div className="text-base-content text-xl font-display font-semibold hover:underline">
-              <a href={props.url} target="_blank">
-                {props.title}
-              </a>
-              {/* <Link to={props.url}>{props.title}</Link> */}
-            </div>
-            <p className="text-base text-[#797A7B] font-body font-small">{props.body}</p>
+      <div className="flex flex-col rounded-2xl shadow-md xl:max-w-[357px]">
+        <img
+          className="rounded-2xl object-cover"
+          src={props.img}
+          alt={props.alt}
+        />
 
-            <div className="flex flex-row items-center gap-4">
-              <button className="bg-[#FFE5A8] text-base-content font-body font-medium px-3 py-2 rounded-xl text-xs flex items-center">
-                {props.difficulty}
-              </button>
+        <a
+          href={props.url}
+          target="_blank"
+          className="mt-3 px-5 text-xl font-semibold text-base-content hover:underline"
+        >
+          {props.title}
+        </a>
 
-              <p className="text-base text-[#797A7B] font-body font-medium">
-                {props.date}
-              </p>
+        <p className="font-small mt-3 px-5 text-base text-[#797A7B]">
+          {props.body}
+        </p>
 
-              <p className="flex flex-row text-base text-[#797A7B] font-body font-medium">
-                <ClockIcon className="w-4 h-4 items-center" />
-                {props.duration} min
-              </p>
-            </div>
-          </div>
+        <div className="mt-3 flex flex-row items-center gap-4 px-5 pb-4">
+          <button
+            className={`flex items-center rounded-xl px-3 py-2 text-xs font-medium text-base-content 
+              ${props.difficulty === "Beginner" 
+                ? "bg-[#c3faae]" 
+                : props.difficulty === "Indermediate" 
+                ? "bg-[#fffba8]" 
+                : props.difficulty === "Advanced" 
+                ? "bg-[#ffa8a8]" 
+                : ""} `}
+          >
+            {props.difficulty}
+          </button>
+
+          {/* <p className="text-base font-medium text-[#797A7B]">{props.date}</p> */}
+
+          <p className="flex flex-row items-center text-base font-medium text-[#797A7B]">
+            <ClockIcon className="mr-1 h-4 w-4" />
+            {props.duration}min
+          </p>
         </div>
       </div>
+
+      {/* </div> */}
     </>
   );
 }

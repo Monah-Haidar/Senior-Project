@@ -17,6 +17,7 @@ const Instrument = sequelize.define("Instrument", {
   },
   symbol: {
     type: DataTypes.CHAR(5),
+    unique: true,
     allowNull: false,
   },
   price: {

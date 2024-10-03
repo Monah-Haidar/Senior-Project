@@ -32,7 +32,7 @@ function Dashboard() {
           axiosPrivate.get(urls[key]).then((response) => ({
             key,
             data: response.data,
-          }))
+          })),
         );
 
         // Fetch all data in parallel
@@ -41,7 +41,7 @@ function Dashboard() {
         results.forEach((result) => {
           if (result.status === "fulfilled") {
             const { key, data } = result.value;
-            console.log("Data fetched:", result.value);
+            // console.log("Data fetched:", result.value);
             switch (key) {
               case "transactions":
                 setTransactions(data.transactions);
@@ -51,7 +51,7 @@ function Dashboard() {
                 break;
               case "orders":
                 setOrders(data.orders);
-                console.log("Orders:", data.orders);
+                // console.log("Orders:", data.orders);
                 break;
               case "alerts":
                 setAlerts(data.alerts);
@@ -65,7 +65,7 @@ function Dashboard() {
           } else {
             console.error(
               `Error fetching ${result.reason.config.url}:`,
-              result.reason.message
+              result.reason.message,
             );
           }
         });
@@ -94,10 +94,10 @@ function Dashboard() {
 
   return (
     <>
-      <div className="flex flex-col items-center gap-10 pt-4 pb-6">
+      <div className="flex flex-col gap-10 mt-10 mx-auto w-9/12">
         {/* estimated balance */}
-        <div className="bg-primary w-3/4 rounded-3xl flex flex-col">
-          <div className="stats text-primary-content">
+        <div className="flex w-1/3 flex-col rounded-3xl">
+          <div className="stats bg-blue-100 text-primary-content">
             <div className="stat">
               <div className="stat-title">Current balance</div>
 
@@ -131,9 +131,9 @@ function Dashboard() {
             </div>
           </div>
         </div>
-        
-        {/* watch list
-        <div className="flex flex-col gap-5 overflow-x-auto rounded-3xl bg-white w-3/4">
+
+        {/* watch list */}
+        {/*<div className="flex flex-col gap-5 overflow-x-auto rounded-3xl bg-white w-3/4">
           <h1 className="text-left pl-6 pt-4 stat-title">Watchlist</h1>
           <div className="table">
             <thead>
@@ -184,11 +184,13 @@ function Dashboard() {
         </div> */}
 
         {/* orders */}
-        <div className="flex flex-col gap-5 overflow-x-auto rounded-3xl bg-white w-3/4">
-          <h1 className="text-left pl-6 pt-4 stat-title">Open Orders</h1>
+        <div className="flex w-3/4 flex-col gap-5 overflow-x-auto bg-white">
+          <h1 className="pl-3 pt-4 text-left text-xl font-semibold text-gray-800">
+            Open Orders
+          </h1>
           {error && <p className="text-red-500">{error}</p>}
           <div className="table">
-            <table>
+            <table className="table max-w-7xl">
               <thead>
                 <tr>
                   <th>Order ID</th>
@@ -207,10 +209,19 @@ function Dashboard() {
                     <td>{order.order_type}</td>
                     <td>{order.order_status}</td>
                     <td>{order.quantity}$</td>
-                    <td>{order.pending_order_value ? order.pending_order_value : "---"}</td>
-                    <td>{order.stop_loss_price ? order.stop_loss_price : "---"}</td>
                     <td>
-                      {order.take_profit_price ? order.take_profit_price : "---"}
+                      {order.pending_order_value
+                        ? order.pending_order_value + "$"
+                        : "---"}
+                    </td>
+                    <td>
+                      {order.stop_loss_price ? order.stop_loss_price : "---"}$
+                    </td>
+                    <td>
+                      {order.take_profit_price
+                        ? order.take_profit_price
+                        : "---"}
+                      $
                     </td>
                   </tr>
                 ))}
@@ -220,11 +231,13 @@ function Dashboard() {
         </div>
 
         {/* Alerts */}
-        <div className="flex flex-col gap-5 overflow-x-auto rounded-3xl bg-white w-3/4">
-          <h1 className="text-left pl-6 pt-4 stat-title">Alerts</h1>
+        <div className="flex w-3/4 flex-col gap-5 overflow-x-auto bg-white">
+          <h1 className="pl-3 pt-4 text-left text-xl font-semibold text-gray-800">
+            Alerts
+          </h1>
           {error && <p className="text-red-500">{error}</p>}
           <div className="table">
-            <table>
+            <table className="table max-w-7xl">
               <thead>
                 <tr>
                   <th>Threshold Price</th>
@@ -236,10 +249,15 @@ function Dashboard() {
               <tbody>
                 {alerts.map((alert, index) => (
                   <tr key={index}>
-                    <td>{alert.threshold} $</td>
+                    <td>{alert.threshold}$</td>
                     <td>{alert.message}</td>
                     <td>{alert.status}</td>
-                    <td>{alert.expiration_date}</td>
+                    <td>
+                      {new Date(alert.expiration_date).toLocaleDateString(
+                        "en-US",
+                        { year: "numeric", month: "long", day: "2-digit" },
+                      )}
+                    </td>
                   </tr>
                 ))}
               </tbody>
@@ -248,13 +266,13 @@ function Dashboard() {
         </div>
 
         {/* Recent transactions */}
-        <div className="flex flex-col gap-5 overflow-x-auto rounded-3xl bg-white w-3/4">
-          <h1 className="text-left pl-6 pt-4 stat-title">
+        <div className="flex w-3/4 flex-col gap-5 overflow-x-auto bg-white">
+          <h1 className="pl-3 pt-4 text-left text-xl font-semibold text-gray-800">
             Recent transactions
           </h1>
           {error && <p className="text-red-500">{error}</p>}
           <div className="table">
-            <table>
+            <table className="table max-w-7xl">
               <thead>
                 <tr>
                   <th>ID</th>
@@ -269,9 +287,15 @@ function Dashboard() {
                 {transactions.map((transaction, index) => (
                   <tr key={index}>
                     <td>{transaction.transaction_id}</td>
-                    <td>{new Date(transaction.createdAt).toLocaleString()}</td>
+                    <td>
+                      {new Date(transaction.createdAt).toLocaleString("en-US", {
+                        year: "numeric",
+                        month: "long",
+                        day: "2-digit",
+                      })}
+                    </td>
                     {/* <td>{transaction.timestamp}</td> */}
-                    <td>{transaction.amount}</td>
+                    <td>{transaction.amount}$</td>
                     <td>{transaction.type}</td>
                     <td>{transaction.status}</td>
                     <td>{transaction.payment_method}</td>

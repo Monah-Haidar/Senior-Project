@@ -1,19 +1,25 @@
 import Account from "../models/account.js";
+import Watchlist from "../models/watchlist.js";
 
 const createAccountFromUser = async (user_id) => {
   try {
-    await Account.sync();
+    // await Account.sync();
 
     const account = await Account.create({
       account_type: "Futures",
       user_id: user_id,
     });
 
+    const watchlist = await Watchlist.create({
+      account_id: account.account_id,
+    });
+
     //return res.json({ message: "Account created", account: account});
 
     return {
-      message: "Account created",
+      message: "Account & Watchlist created",
       account: account,
+      watchlist: watchlist,
     };
   } catch (err) {
     console.error(err);

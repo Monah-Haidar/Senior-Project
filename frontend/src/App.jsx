@@ -22,22 +22,18 @@ function App() {
       <Routes>
         <Route path="/*" element={<Layout />}>
           {/* Public Routes */}
-          <Route path="" element={<LandingPage />} />
           <Route path="user/sign-in" element={<SignIn />} />
           <Route path="user/sign-up" element={<SignUp />} />
-          
-          <Route path="market-prices" element={<MarketPrices />} />
-          
           <Route path="market-news" element={<MarketNews />} />
           <Route path="academy" element={<Academy />} />
-          
+
 
           {/* Private Routes */}
           <Route element={<RequireAuth />}>
-            <Route path="dashboard" element={<Dashboard />} />
+            <Route path="" element={<Dashboard />} />
             <Route path="journal" element={<Journal />} />
             <Route path="trade" element={<Trade />} />
-            
+            <Route path="market-prices" element={<MarketPrices />} />
             
           </Route>
         </Route>

@@ -25,6 +25,7 @@ const New = sequelize.define("New", {
   },
   title: {
     type: DataTypes.STRING,
+    unique: true,
     allowNull: false,
   },
   publication_time: {

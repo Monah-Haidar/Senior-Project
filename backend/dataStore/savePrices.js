@@ -2,8 +2,8 @@ import Instrument from "../models/instrument.js";
 
 const savePriceData = async (tokens) => {
   try {
-    await Instrument.sync();
-
+    // await Instrument.sync();
+    console.log("Saving prices...");
     for (const token of tokens) {
       await Instrument.upsert({
         rank: token.rank,
@@ -18,7 +18,9 @@ const savePriceData = async (tokens) => {
         market_cap: token.marketCap,
         circulating_supply: token.circulatingSupply,
         total_supply: token.totalSupply,
+        
       });
+      // console.log(`Price for ${token.symbol} is: ${token.price}`);
     }
 
     console.log("Prices saved successfully");

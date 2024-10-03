@@ -46,6 +46,11 @@ const Order = sequelize.define("Order", {
     allowNull: true,
     defaultValue: null,
   },
+  close_price: {
+    type: DataTypes.FLOAT,
+    allowNull: true,
+    defaultValue: null,
+  },
   creation_time: {
     type: DataTypes.DATE,
     allowNull: false,

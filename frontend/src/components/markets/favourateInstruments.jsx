@@ -9,9 +9,15 @@ function FavouriteInstruments() {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const response = await axiosPrivate.get("/api/price/watchlist");
-        console.log("Favorate Instrument Data:", response.data);
-        setMarketData(response.data);
+        const response = await axiosPrivate.get("/api/price");
+        // console.log("Favorate Instrument Data:", response.data);
+
+        const filteredMarketData = response.data.prices.filter((item) => {
+          return item.watchlist_id === response.data.account_id;
+        });
+      
+        setMarketData(filteredMarketData);
+
       } catch (error) {
         console.error("Error fetching data:", error);
         return null;
@@ -21,17 +27,14 @@ function FavouriteInstruments() {
     fetchData();
   }, []);
 
-  // // Filter the marketData based on localStorage
-  // const filteredMarketData = marketData.filter((item) => {
-  //   return localStorage.getItem(item.name) === "true";
-  // });
 
   return (
     <>
-      <div>
+      <tbody>
         {marketData.map((item, index) => (
           <InstrumentCard
           key={index}
+          instrument_id={item.instrument_id}
           rank={item.rank}
           name={item.name}
           price={item.price}
@@ -40,9 +43,10 @@ function FavouriteInstruments() {
           marketCap={item.market_cap}
           circulatingSupply={item.circulating_supply}
           totalSupply={item.total_supply}
+          isInWatchlist={true}
           />
         ))}
-      </div>
+      </tbody>
     </>
   );
 }

@@ -24,8 +24,8 @@ const createEntry = async (req, res) => {
       entry_date,
       mood,
       market_conditions,
-      img,
       self_reflection,
+      img,
       user_id: user_id,
     });
 

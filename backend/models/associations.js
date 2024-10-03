@@ -26,6 +26,6 @@ export function setupAssociations() {
 
 
   Account.hasMany(Watchlist, { foreignKey: "account_id", onDelete: "CASCADE" });
-  Watchlist.hasMany(Instrument, { foreignKey: "watchlist_id", onDelete: "SET NULL" });
-  Instrument.belongsTo(Watchlist, { foreignKey: "watchlist_id" });
+  // Watchlist.hasMany(Instrument, { foreignKey: "watchlist_id", onDelete: "SET NULL" });
+  Instrument.hasMany(Watchlist, { foreignKey: "instrument_id", onDelete: "CASCADE" });
 }

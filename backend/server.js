@@ -19,6 +19,8 @@ import refreshToken from "./routes/refreshRoute.js";
 import verifyJWT from "./middleware/verifyJWT.js";
 
 import cronJobAPI from "./cronJobs/cronJobAPI.js";
+import cronJobLimitOrder from "./cronJobs/cronJobLimitOrder.js";
+import cronJobTakeProfitAndStopLossOrders from "./cronJobs/cronJobTakeProfitAndStopLossOrders.js";
 
 import { setupAssociations } from "./models/associations.js";
 
@@ -45,15 +47,19 @@ setupAssociations();
 try {
   await sequelize.authenticate();
   console.log("Connection has been established successfully.");
-  await sequelize.sync({force: false});
+  await sequelize.sync({alter: false});
 } catch (error) {
   console.error("Unable to connect to the database:", error);
 } 
 
 
 // Cron Job
-// cronJobAPI();
 
+// console.log("Running fetch every 1 minutes...");
+// cronJobAPI();
+// console.log("Checking pending orders...");
+// cronJobLimitOrder();
+// cronJobTakeProfitAndStopLossOrders();
 
 // Routes
 app.use("/api/price", priceAPI);

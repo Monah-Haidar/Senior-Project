@@ -171,7 +171,7 @@ const articles = [
     img: "https://public.bnbstatic.com/static/academy/uploads-original/d969c1139bec4159af18df62d28fa8f9.jpg",
   },
   {
-    title: "What Are Decentralized Derivatives and How Do They Work",
+    title: "What Are Decentralized Derivatives",
     body: "Decentralized derivatives use smart contracts to automate contract terms, allowing trading on DEXs and offering crypto exposure.",
     url: "https://academy.binance.com/en/articles/what-are-decentralized-derivatives-and-how-do-they-work-in-defi",
     published_date: null,

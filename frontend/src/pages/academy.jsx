@@ -11,7 +11,7 @@ function Academy() {
     fetch("http://localhost:3500/articles")
       .then((response) => response.json())
       .then((data) => {
-        // console.log(data);
+        console.log(data);
         setArticles(data);
         setFilteredArticles(data); // Initially, all articles are displayed
       })
@@ -27,34 +27,35 @@ function Academy() {
       setFilteredArticles(articles);
     } else {
       const filtered = articles.filter(
-        (article) => article.difficulty === difficulty
+        (article) => article.difficulty === difficulty,
       );
       setFilteredArticles(filtered);
     }
   };
 
-
   return (
     <>
-      <div className=" bg-slate-100 ">
+       {/*
+      <div className="bg-slate-100">
+      
         <div className="">
-          {/* <h1 className="text-4xl font-display font-semibold text-base-content mb-6">
+          <h1 className="text-4xl font-display font-semibold text-base-content mb-6">
             Topics at Academy
-          </h1> */}
-          {/* <Filters /> */}
+          </h1> 
+          <Filters />
         </div>
       </div>
 
-      {/* <div className="bg-base-200 w-full">
+      <div className="bg-base-200 w-full">
         <div className="max-w-[1100px] mx-auto">
           <FilterBar />
         </div>
-      </div> */}
-
+      </div>
+*/}
       <div className="flex items-center justify-center py-12">
         <div className="mx-6">
-          <div className="flex flex-row justify-between mb-8">
-            <h2 className="text-3xl font-display font-semibold text-base-content">
+          <div className="mb-8 flex flex-row justify-between gap-4">
+            <h2 className="font-display text-3xl font-semibold text-base-content">
               Articles
             </h2>
             <div className="flex gap-2">
@@ -94,20 +95,22 @@ function Academy() {
           </div>
 
           {/* Cards */}
-          <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 xl:grid-cols-3 justify-items-center">
-            {filteredArticles.map((article) => (
-              <AcademyVerticalCard
-                key={article.article_id}
-                img={article.img_url}
-                alt={article.alt}
-                title={article.title}
-                body={article.body}
-                difficulty={article.difficulty}
-                date={article.published_at}
-                duration={article.reading_time}
-                url={article.article_url}
-              />
-            ))}
+          <div className="grid grid-cols-1 justify-items-center gap-4 sm:grid-cols-2 xl:grid-cols-3">
+            
+              {filteredArticles.map((article) => (
+                <AcademyVerticalCard
+                  key={article.article_id}
+                  img={article.img_url}
+                  alt={article.alt}
+                  title={article.title}
+                  body={article.body}
+                  difficulty={article.difficulty}
+                  date={article.published_at}
+                  duration={article.reading_time}
+                  url={article.article_url}
+                />
+              ))}
+            
           </div>
         </div>
       </div>

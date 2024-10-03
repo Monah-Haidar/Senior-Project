@@ -38,7 +38,7 @@ function Navbar() {
         <div className="flex flex-row items-center">
           <Link
             className="text-primary font-semibold text-2xl h-4 flex flex-row items-center"
-            to="/dashboard"
+            to="/"
           >
             <LogoSVG />
             TerraTrade

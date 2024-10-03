@@ -90,7 +90,7 @@ const getAlerts = async (req, res) => {
       where: { user_id: user_id, account_type: "Futures" },
     });
 
-    console.log(account.account_id);
+    // console.log(account.account_id);
     if (account == null) {
       return res.status(404).json({ message: "Account not found" });
     }

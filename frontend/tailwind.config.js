@@ -34,8 +34,11 @@ export default {
         },
       },
     ],
+    
   },
   theme: {
+
+   
     extend: {},
   },
   plugins: [daisyui],

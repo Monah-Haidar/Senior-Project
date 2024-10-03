@@ -23,7 +23,7 @@ const AlertForm = () => {
   const validationSchema = Yup.object({
     title: Yup.string().required("Alert title is required"),
     threshold: Yup.number().required("threshold is required"),
-    expiration_date: Yup.number().required("Invalid date"),
+    expiration_date: Yup.string().required("Invalid date"),
   });
 
   const onSubmit = (values, { setSubmitting, resetForm }) => {
@@ -100,7 +100,7 @@ const AlertForm = () => {
             <div className="form-group">
               <label htmlFor="expiration_date">Expiration date</label>
               <Field
-                type="text"
+                type="date"
                 id="expiration_date"
                 name="expiration_date"
                 className={inputStyle}
