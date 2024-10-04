@@ -1,18 +1,33 @@
 import New from "../models/new.js";
+import { Op } from "sequelize";
 
 const getCryptoNews = async (req, res) => {
   try {
     // await New.sync();
-    const cryptoNews = await New.findAll({
+    const coindeskNews = await New.findAll({
       where: {
         category: "crypto",
+        source_name: "coindesk",
       },
       order: [["createdAt", "DESC"]],
-      limit: 12,
+      limit: 9,
     });
 
-    return res.json(cryptoNews);
-    
+    // Fetch 3 articles where category is "crypto" and source_name is not "coindesk"
+    const otherCryptoNews = await New.findAll({
+      where: {
+        category: "crypto",
+        source_name: { [Op.ne]: "coindesk" },  // Op.ne stands for "not equal"
+      },
+      order: [["createdAt", "DESC"]],
+      limit: 3,
+    });
+
+    // Combine the two results into a single array
+    const combinedNews = [...coindeskNews, ...otherCryptoNews];
+
+ 
+    return res.json(combinedNews);
   } catch (err) {
     console.error(err);
     res.status(500).json({ message: "Internal Server Error" });

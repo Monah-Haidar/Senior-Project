@@ -65,7 +65,7 @@ const getNewsFromAPI = async (req, res) => {
     const forexFilteredData2 = forexResponse2.data.data.map((news) => ({
       title: news.title,
       publication_time: news.date,
-      source: news.source_name,
+      source_name: news.source_name,
       news_url: news.news_url,
       related_instruments: news.currency ? news.currency.join(", ") : null,
       img_url: news.image_url,
@@ -114,7 +114,7 @@ const getNewsFromAPI = async (req, res) => {
     ];
 
     //res.status(200).json(data);
-    console.log(data[0]);
+    // console.log(data[0]);
     return data;
 
   } catch (err) {

@@ -35,23 +35,6 @@ function Academy() {
 
   return (
     <>
-       {/*
-      <div className="bg-slate-100">
-      
-        <div className="">
-          <h1 className="text-4xl font-display font-semibold text-base-content mb-6">
-            Topics at Academy
-          </h1> 
-          <Filters />
-        </div>
-      </div>
-
-      <div className="bg-base-200 w-full">
-        <div className="max-w-[1100px] mx-auto">
-          <FilterBar />
-        </div>
-      </div>
-*/}
       <div className="flex items-center justify-center py-12">
         <div className="mx-6">
           <div className="mb-8 flex flex-row justify-between gap-4">

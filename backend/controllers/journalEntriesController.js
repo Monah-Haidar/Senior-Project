@@ -9,7 +9,8 @@ const createEntry = async (req, res) => {
     const user_id = req.user_id;
 
     const {
-      title,
+      trade_result,
+      currency,
       reasoning,
       entry_date,
       mood,
@@ -19,7 +20,8 @@ const createEntry = async (req, res) => {
     } = req.body;
 
     const journalEntry = await JournalEntrie.create({
-      title,
+      trade_result,
+      currency,
       reasoning,
       entry_date,
       mood,
@@ -43,7 +45,9 @@ const getAllEntries = async (req, res) => {
   try {
     // await JournalEntrie.sync();
 
-    const journal_entry = await JournalEntrie.findAll();
+    const journal_entry = await JournalEntrie.findAll(
+      {where: {user_id: req.user_id}},
+    );
 
     if (!journal_entry) {
       return res.status(404).json({ message: "Journal Entry not found" });

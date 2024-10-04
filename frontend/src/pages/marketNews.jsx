@@ -74,11 +74,11 @@ function MarketNews() {
         </h3>
       </div>
 
-      <div className="mx-auto my-8 flex w-11/12 flex-col gap-12">
+      <div className="mx-auto my-8 flex w-10/12 flex-col gap-12">
         <div className="flex flex-col gap-4">
           {/* World News */}
           <h2 className="text-xl font-semibold">World News</h2>
-          <div className="grid grid-cols-1 justify-items-center gap-4 sm:grid-cols-2 xl:grid-cols-3">
+          <div className="grid grid-cols-1 gap-x-14 gap-y-4 lg:grid-cols-2 2xl:grid-cols-4">
             {worldNews.length > 0 ? (
               worldNews.map((item, index) => (
                 <NewsCard
@@ -101,18 +101,18 @@ function MarketNews() {
         {/* Gold News */}
         <div className="flex flex-col gap-4">
           <h2 className="text-xl font-semibold">Gold News</h2>
-          <div className="grid grid-cols-1 justify-items-center gap-4 sm:grid-cols-2 xl:grid-cols-3">
+          <div className="grid grid-cols-1 gap-x-14 gap-y-4 lg:grid-cols-2 2xl:grid-cols-4">
             {goldNews.length > 0 ? (
               goldNews.map((item, index) => (
                 <NewsCard
                   key={index}
                   title={item.title}
                   body={item.body}
-                  newsSource={item.source}
-                  url={item.url}
-                  dateUploaded={item.dateUploaded}
-                  img={item.img}
-                  alt={item.alt}
+                  newsSource={item.source_name}
+                  url={item.news_url}
+                  dateUploaded={item.publication_time}
+                  img={item.img_url}
+                  alt={"image"}
                 />
               ))
             ) : (
@@ -124,7 +124,7 @@ function MarketNews() {
         {/* Crypto News */}
         <div className="flex flex-col gap-4">
           <h2 className="text-xl font-semibold">Crypto News</h2>
-          <div className="grid grid-cols-1 gap-x-14 gap-y-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+          <div className="grid grid-cols-1 gap-x-14 gap-y-4 lg:grid-cols-2 2xl:grid-cols-4">
             {cryptoNews.length > 0 ? (
               cryptoNews.map((item, index) => (
                 <NewsCard
@@ -147,18 +147,18 @@ function MarketNews() {
         {/* Forex News*/}
         <div className="flex flex-col gap-4">
           <h2 className="text-xl font-semibold">Forex News</h2>
-          <div className="grid grid-cols-1 justify-items-center gap-4 sm:grid-cols-2 xl:grid-cols-3">
+          <div className="grid grid-cols-1 gap-x-14 gap-y-4 lg:grid-cols-2 2xl:grid-cols-4">
             {forexNews.length > 0 ? (
               forexNews.map((item, index) => (
                 <NewsCard
                   key={index}
                   title={item.title}
                   body={item.body}
-                  newsSource={item.source}
-                  url={item.url}
-                  dateUploaded={item.dateUploaded}
-                  img={item.img}
-                  alt={item.alt}
+                  newsSource={item.source_name}
+                  url={item.news_url}
+                  dateUploaded={item.publication_time}
+                  img={item.img_url}
+                  alt={"image"}
                 />
               ))
             ) : (

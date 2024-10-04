@@ -79,6 +79,21 @@ function Trade() {
             </div>
           </div>
 
+            {/* Journal Button with Dropdown */}
+            <div
+            tabIndex={0}
+            role="button"
+            className="btn dropdown dropdown-left flex w-10/12 flex-row gap-2"
+          >
+            <div className="flex w-full flex-row items-center gap-2">
+            <BookOpenIcon className="h-6 w-6" />
+              <h1 className="text-left">Journal Entry</h1>
+            </div>
+            <div className="dropdown-content z-[1] w-72 rounded-box bg-base-100 p-2 shadow">
+              <JournalEntryForm />
+            </div>
+          </div>
+
           {/* Predict Trade with trading bot */}
           <div
             tabIndex={0}
@@ -125,20 +140,7 @@ function Trade() {
             </div>
           </div>
 
-          {/* Journal Button with Dropdown */}
-          <div
-            tabIndex={0}
-            role="button"
-            className="btn dropdown dropdown-left flex w-10/12 flex-row gap-2"
-          >
-            <div className="flex w-full flex-row items-center gap-2">
-            <BookOpenIcon className="h-6 w-6" />
-              <h1 className="text-left">Journal Entry</h1>
-            </div>
-            <div className="dropdown-content z-[1] w-72 rounded-box bg-base-100 p-2 shadow">
-              <JournalEntryForm />
-            </div>
-          </div>
+        
 
           {/* Create Alert */}
           <div

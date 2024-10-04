@@ -7,7 +7,12 @@ const JournalEntrie = sequelize.define("JournalEntrie", {
     primaryKey: true,
     autoIncrement: true,
   },
-  title: {
+  trade_result: {
+    type: DataTypes.ENUM,
+    values: ["Winner", "Loser", "Break Even"],
+    allowNull: false,
+  },
+  currency: {
     type: DataTypes.STRING,
     allowNull: false,
   },

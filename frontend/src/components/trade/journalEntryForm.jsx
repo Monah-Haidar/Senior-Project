@@ -14,7 +14,8 @@ const JournalEntryForm = () => {
   const [imagePreview, setImagePreview] = useState(null);
 
   const initialValues = {
-    title: "",
+    trade_result: "",
+    currency: "",
     reasoning: "",
     entry_date: "",
     mood: "",
@@ -26,7 +27,8 @@ const JournalEntryForm = () => {
   // const imageUrlRegex = /\.(jpeg|jpg|gif|png|svg|webp)$/i;
 
   const validationSchema = Yup.object({
-    title: Yup.string().required("Title is required"),
+    trade_result: Yup.string().required("Trade result is required"),
+    currency: Yup.string().required("Currency is required"),
     reasoning: Yup.string().required("Reasoning is required"),
     entry_date: Yup.string().required("Entry Date is required"),
     mood: Yup.string().required("Mood is required"),
@@ -45,7 +47,8 @@ const JournalEntryForm = () => {
     console.log("values: ", values);
 
     const payload = {
-      title: values.title,
+      trade_result: values.trade_result,
+      currency: values.currency,
       reasoning: values.reasoning,
       entry_date: values.entry_date,
       mood: values.mood,
@@ -74,16 +77,38 @@ const JournalEntryForm = () => {
         {({ isSubmitting, setFieldValue }) => (
           <Form className="flex flex-col gap-4">
             <div className="form-group">
-              <label htmlFor="title">Title</label>
+              <label htmlFor="trade_result">Trade Result</label>
+              <Field
+                as="select"
+                id="trade_result"
+                name="trade_result"
+                className={inputStyle}
+                placeholder="Enter trade result"
+              >
+
+<option value="Winner">Winner</option>
+                <option value="Loser">Loser</option>
+                <option value="Break Even">Break Even</option>
+
+              </Field>
+              <ErrorMessage
+                name="trade_result"
+                component="div"
+                className={errorStyle}
+              />
+            </div>
+
+            <div className="form-group">
+              <label htmlFor="currency">Currency</label>
               <Field
                 type="text"
-                id="title"
-                name="title"
+                id="currency"
+                name="currency"
                 className={inputStyle}
-                placeholder="Enter title"
+                placeholder="Enter currency"
               />
               <ErrorMessage
-                name="title"
+                name="currency"
                 component="div"
                 className={errorStyle}
               />
@@ -124,7 +149,6 @@ const JournalEntryForm = () => {
             <div className="form-group">
               <label htmlFor="mood">Mood</label>
               <Field
-                type="text"
                 id="mood"
                 name="mood"
                 as="select"
