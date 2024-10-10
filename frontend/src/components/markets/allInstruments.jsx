@@ -4,6 +4,9 @@ import useAxiosPrivate from "../../hooks/useAxiosPrivate";
 
 function AllInstruments() {
   const [marketData, setMarketData] = useState([]);
+  const [watchlistData, setWatchlistData] = useState([]);
+
+  const [isInWatchlist, setIsInWatchlist] = useState(false);
   const [accountId, setAccountId] = useState(null);
   const axiosPrivate = useAxiosPrivate();
   useEffect(() => {
@@ -11,28 +14,48 @@ function AllInstruments() {
       try {
         // const response = await axiosPrivate.get("/api/price/watchlist");
         const response = await axiosPrivate.get("/api/price");
-        // console.log("Instrument Data:", response.data);
-
+        // console.log("Instrument Data:", response.data.prices);
+        const sortByRank = response.data.prices.sort((a, b) => a.rank - b.rank);
         setAccountId(response.data.account_id);
-        setMarketData(response.data.prices);
+        setMarketData(sortByRank);
       } catch (error) {
         console.error("Error fetching data:", error);
         return null;
       }
     };
 
+    const fetchWatchlistData = async () => {
+      try {
+        const response = await axiosPrivate.get("/api/price/watchlist");
+        // console.log("Watchlist Data:", response.data.watchlist);
+
+        setWatchlistData(response.data.watchlist);
+      } catch (error) {
+        console.error("Error fetching watchlist data:", error);
+      }
+    };
+
+    const filterData = async () => {
+      marketData.forEach((item) => {
+        if (watchlistData.some((watchlistItem) => watchlistItem.instrument_id === item.instrument_id)) {
+          // console.log("Item is in watchlist", item);
+          return setIsInWatchlist((prev) => [...prev, item]);
+        }
+      });
+    };
+
+   
+
     fetchData();
+    fetchWatchlistData();
+    filterData();
   }, []);
 
-  const watchlistData = marketData.filter((marketData) => {
-    return marketData.watchlist_id === accountId;
-  });
-  // console.log("Watchlist Data:", watchlistData);
+  
 
   return (
     <>
-  
-        <tbody>
+      <tbody>
         {marketData.map((item, index) => (
           <InstrumentCard
             key={index}
@@ -47,12 +70,11 @@ function AllInstruments() {
             totalSupply={item.total_supply}
             isInWatchlist={watchlistData.some(
               (watchlistItem) =>
-                watchlistItem.instrument_id === item.instrument_id
+                watchlistItem.instrument_id === item.instrument_id,
             )}
           />
         ))}
-        </tbody>
-    
+      </tbody>
     </>
   );
 }

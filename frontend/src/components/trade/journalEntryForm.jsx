@@ -13,6 +13,10 @@ const JournalEntryForm = () => {
   const axiosPrivate = useAxiosPrivate();
   const [imagePreview, setImagePreview] = useState(null);
 
+
+  const [success, setSuccess] = useState(false);
+
+
   const initialValues = {
     trade_result: "",
     currency: "",
@@ -59,6 +63,8 @@ const JournalEntryForm = () => {
 
     try {
       await axiosPrivate.post("/journalEntries", payload);
+      setSuccess(true);
+      resetForm();
     } catch (error) {
       console.error("Error:", error);
     } finally {
@@ -66,6 +72,13 @@ const JournalEntryForm = () => {
     }
   };
 
+
+  const handleModalClick = (modalName) => {
+    const modal = document.getElementById(modalName);
+    if (modal) {
+      modal.showModal();
+    }
+  };
 
   return (
     <div className="container">
@@ -225,12 +238,28 @@ const JournalEntryForm = () => {
               type="submit"
               className="btn btn-primary"
               disabled={isSubmitting}
+              onClick={() => handleModalClick("my_modal_4")}
             >
               Submit
             </button>
           </Form>
         )}
       </Formik>
+
+
+      {success && (
+        <dialog id="my_modal_4" className="modal">
+          <div className="modal-box">
+            <form method="dialog">
+              <button className="btn btn-circle btn-ghost btn-sm absolute right-2 top-2">
+                ✕
+              </button>
+            </form>
+            <h3 className="text-lg font-bold">Success!</h3>
+            <p className="py-4">Journal Entry Created Successfully</p>
+          </div>
+        </dialog>
+      )}
     </div>
   );
 };

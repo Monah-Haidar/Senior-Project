@@ -15,9 +15,9 @@ const AlertForm = () => {
   const axiosPrivate = useAxiosPrivate();
 
   const initialValues = {
-    title: "",
-    threshold: "",
-    expiration_date: "",
+    title: "fads",
+    threshold: "534",
+    expiration_date: "2024-01-01",
   };
 
   const validationSchema = Yup.object({
@@ -27,26 +27,23 @@ const AlertForm = () => {
   });
 
   const onSubmit = (values, { setSubmitting, resetForm }) => {
-
     const payload = {
       message: values.title,
       threshold: values.threshold,
       expiration_date: values.expiration_date,
     };
 
-    try{
-
+    try {
       axiosPrivate.post("/alert/create", payload);
 
       console.log("values", payload);
       setSuccess(true);
       resetForm();
-    }catch(error){
+    } catch (error) {
       console.error("Error creating alert:", error);
     } finally {
       setSubmitting(false);
     }
-
   };
 
   const handleModalClick = (modalName) => {
@@ -115,7 +112,7 @@ const AlertForm = () => {
 
             <button
               type="submit"
-              onClick={() => handleModalClick("successModal")}
+              onClick={() => handleModalClick("my_modal_3")}
               className="btn btn-primary"
               disabled={isSubmitting}
             >
@@ -125,24 +122,19 @@ const AlertForm = () => {
         )}
       </Formik>
 
-      {success ? (
-        <div role="alert" className="alert alert-success mt-4">
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            className="stroke-current shrink-0 h-6 w-6"
-            fill="none"
-            viewBox="0 0 24 24"
-          >
-            <path
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              strokeWidth="2"
-              d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"
-            />
-          </svg>
-          <span>Your Alert was Successfully Added!</span>
-        </div>
-      ) : null}
+      {success && (
+        <dialog id="my_modal_3" className="modal">
+          <div className="modal-box">
+            <form method="dialog">
+              <button className="btn btn-circle btn-ghost btn-sm absolute right-2 top-2">
+                ✕
+              </button>
+            </form>
+            <h3 className="text-lg font-bold">Success!</h3>
+            <p className="py-4">Alert Created Successfully</p>
+          </div>
+        </dialog>
+      )}
     </div>
   );
 };

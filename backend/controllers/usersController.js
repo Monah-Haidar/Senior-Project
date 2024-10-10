@@ -6,7 +6,7 @@ import { createAccountFromUser } from "./accountsController.js";
 
 const generateAccessToken = (payload) => {
   return jwt.sign(payload, process.env.ACCESS_TOKEN_SECRET, {
-    expiresIn: "1hr",
+    expiresIn: "15m",
   });
 };
 

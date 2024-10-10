@@ -1,4 +1,4 @@
-import React from "react";
+import {useState} from "react";
 import { Formik, Form, Field, ErrorMessage } from "formik";
 import * as Yup from "yup";
 import useAxiosPrivate from "../../hooks/useAxiosPrivate";
@@ -9,6 +9,7 @@ const inputStyle =
 const errorStyle = "text-red-500 text-sm mt-1";
 
 const AutomateForm = () => {
+  const [success, setSuccess] = useState(false);
 
   const axiosPrivate = useAxiosPrivate();
   const initialValues = {
@@ -51,6 +52,15 @@ const AutomateForm = () => {
       console.error("Error creating order:", error);
     } finally {
       setSubmitting(false);
+    }
+  };
+
+
+
+  const handleModalClick = (modalName) => {
+    const modal = document.getElementById(modalName);
+    if (modal) {
+      modal.showModal();
     }
   };
 
@@ -136,6 +146,7 @@ const AutomateForm = () => {
               <button
                 type="submit"
                 className="btn btn-primary w-full"
+                onClick={() => handleModalClick("my_modal_2")}
                 disabled={isSubmitting}
               >
                 Buy
@@ -144,6 +155,26 @@ const AutomateForm = () => {
           </Form>
         )}
       </Formik>
+
+
+      {success && (
+        <dialog id="my_modal_2" className="modal">
+          <div className="modal-box">
+            <form method="dialog">
+              <button className="btn btn-circle btn-ghost btn-sm absolute right-2 top-2">
+                ✕
+              </button>
+            </form>
+            <h3 className="text-lg font-bold">Success!</h3>
+            <p className="py-4">Limit Order Created Successfully</p>
+          </div>
+        </dialog>
+      )}
+
+
+
+
+
     </div>
   );
 };

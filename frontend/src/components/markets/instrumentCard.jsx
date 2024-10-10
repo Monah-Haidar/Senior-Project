@@ -32,9 +32,8 @@ function InstrumentCard(props) {
   const removeItemFromWatchlist = async () => {
     try {
       setIsInWatchlist(false);
-      await axiosPrivate.post(
-        "api/price/watchlist/remove",
-        JSON.stringify({ id: props.instrument_id })
+      await axiosPrivate.delete(
+        `api/price/watchlist/remove/${props.instrument_id}`,
       );
     } catch (error) {
       console.error("Error removing item from watchlist:", error);
@@ -44,10 +43,7 @@ function InstrumentCard(props) {
   const addItemToWatchlist = async () => {
     try {
       setIsInWatchlist(true);
-      await axiosPrivate.post(
-        "api/price/watchlist/add",
-        JSON.stringify({ id: props.instrument_id })
-      );
+      await axiosPrivate.post(`api/price/watchlist/add/${props.instrument_id}`);
     } catch (error) {
       console.error("Error adding item to watchlist:", error);
     }
@@ -92,7 +88,6 @@ function InstrumentCard(props) {
             <StarIcon
               className="size-5"
               onClick={() => {
-                //add
                 addItemToWatchlist();
               }}
             />

@@ -1,8 +1,8 @@
 function JournalEntryCard(props) {
   return (
     <>
-      <div className="card card-side w-8/12 rounded-lg border border-gray-200 bg-white shadow-lg hover:shadow-2xl">
-        <div className="card-body p-6 relative">
+      <div className="card card-side ">
+        <div className="card-body p-6 relative rounded-lg border border-gray-200 bg-white shadow-lg hover:shadow-2xl lg:w-full lg:max-w-5xl mx-8">
         <button
           className="absolute right-0 top-0 flex h-6 w-6 items-center justify-center rounded-full bg-red-500 text-white hover:bg-red-600 focus:outline-none"
           onClick={() => props.handleDelete(props.entryId)} 

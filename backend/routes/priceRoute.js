@@ -3,14 +3,16 @@ import {
   getAllPrices,
   removeFromWatchlist,
   addToWatchlist,
+  getWatchlist
 } from "../controllers/priceController.js";
-// import { getAllWatchlists } from "../controllers/watchlistController.js";
+
 import verifyJWT from "../middleware/verifyJWT.js";
 const router = express.Router();
 
+
 router.get("/", verifyJWT, getAllPrices);
-router.post("/watchlist/remove", verifyJWT, removeFromWatchlist);
-router.post("/watchlist/add", verifyJWT, addToWatchlist);
-// router.get('/watchlist',verifyJWT, getAllWatchlists);
+router.delete("/watchlist/remove/:id", verifyJWT, removeFromWatchlist);
+router.post("/watchlist/add/:id", verifyJWT, addToWatchlist);
+router.get('/watchlist',verifyJWT, getWatchlist);
 
 export default router;

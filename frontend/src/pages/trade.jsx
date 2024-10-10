@@ -1,14 +1,10 @@
-import { useState } from "react";
+import { useState,useRef } from "react";
 
 import TradingViewWidget from "../components/trade/chart";
 import JournalEntryForm from "../components/trade/journalEntryForm";
 import AlertForm from "../components/trade/alertForm";
 import TradeForm from "../components/trade/tradeForm";
 import AutomateForm from "../components/trade/automateForm";
-
-// import BookOpen from "../assets/icons/book-open";
-// import Chart from "../assets/icons/chart";
-// import BellAlert from "../assets/icons/bell-alert";
 
 import {
   ClockIcon,
@@ -19,27 +15,16 @@ import {
   BookOpenIcon,
 } from "@heroicons/react/24/outline";
 
-
-
-
-
-
-
-
-
-
-
-// import { StarIcon as StarIconSolid } from "@heroicons/react/20/solid";
-
-// import PredictForm from "../components/trade/predictForms";
-
 function Trade() {
   const [predictedPrice, setPredictedPrice] = useState("");
 
+ 
   return (
     <div className="flex flex-row">
+     
+
+      {/* CHART */}
       <div className="flex h-[90vh] w-[90vw] flex-col overflow-hidden">
-        {/* CHART */}
         <div className="flex-1 overflow-hidden">
           <TradingViewWidget />
         </div>
@@ -55,7 +40,7 @@ function Trade() {
             className="btn dropdown dropdown-left flex w-10/12 flex-row gap-2"
           >
             <div className="flex w-full flex-row items-center gap-2">
-            <PresentationChartLineIcon className="h-6 w-6" />
+              <PresentationChartLineIcon className="h-6 w-6" />
               <h1 className="text-left">Market Order</h1>
             </div>
 
@@ -79,14 +64,14 @@ function Trade() {
             </div>
           </div>
 
-            {/* Journal Button with Dropdown */}
-            <div
+          {/* Journal Button with Dropdown */}
+          <div
             tabIndex={0}
             role="button"
             className="btn dropdown dropdown-left flex w-10/12 flex-row gap-2"
           >
             <div className="flex w-full flex-row items-center gap-2">
-            <BookOpenIcon className="h-6 w-6" />
+              <BookOpenIcon className="h-6 w-6" />
               <h1 className="text-left">Journal Entry</h1>
             </div>
             <div className="dropdown-content z-[1] w-72 rounded-box bg-base-100 p-2 shadow">
@@ -120,7 +105,7 @@ function Trade() {
                     return response.json();
                   })
                   .then((data) => {
-                    console.log("Success:", data);
+                    // console.log("Success:", data);
                     setPredictedPrice(data.response);
                   })
                   .catch((error) => {
@@ -140,8 +125,6 @@ function Trade() {
             </div>
           </div>
 
-        
-
           {/* Create Alert */}
           <div
             tabIndex={0}
@@ -149,11 +132,12 @@ function Trade() {
             className="btn dropdown dropdown-left flex w-10/12 flex-row gap-2"
           >
             <div className="flex w-full flex-row items-center gap-2">
-            <ClockIcon className="h-6 w-6" />
+              <ClockIcon className="h-6 w-6" />
               <h1 className="text-left">Alert</h1>
             </div>
             <div className="dropdown-content z-[1] w-72 rounded-box bg-base-100 p-2 shadow">
-              <AlertForm />
+              <AlertForm
+              />
             </div>
           </div>
         </div>

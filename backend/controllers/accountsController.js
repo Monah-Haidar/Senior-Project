@@ -12,6 +12,7 @@ const createAccountFromUser = async (user_id) => {
 
     const watchlist = await Watchlist.create({
       account_id: account.account_id,
+      watchlist_id: account.account_id
     });
 
     //return res.json({ message: "Account created", account: account});
@@ -67,19 +68,17 @@ const getBalance = async (req, res) => {
       return res.status(404).json({ message: "Account not found" });
     }
 
-
-
-    return res.json({ "Total Balance": account.total_balance, message: "success" });
-    
+    return res.json({
+      "Total Balance": account.total_balance,
+      message: "success",
+    });
   } catch (err) {
     console.error(err);
     res.status(500).json({ message: err.message });
   }
 };
 
-
 export { createAccountFromUser, updateBalance, getBalance };
-
 
 /////////////////////////////////////////////////////////////////////////////////
 
@@ -148,5 +147,3 @@ const getAccount = (req, res) => {
     res.status(500).json({ message: err.message });
   }
 };
-
-

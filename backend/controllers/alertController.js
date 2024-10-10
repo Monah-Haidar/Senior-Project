@@ -105,4 +105,16 @@ const getAlerts = async (req, res) => {
   }
 };
 
-export { sendEmail, sendAlert, createAlert, getAlerts };
+// delete alert from database
+const deleteAlert = async (req, res) => {
+  try {
+    const alert_id = req.params.id;
+    await Alert.destroy({ where: { alert_id: alert_id } });
+    return res.status(200).json({ message: "Alert deleted successfully" });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ message: err.message });
+  }
+};
+
+export { sendEmail, sendAlert, createAlert, getAlerts, deleteAlert };

@@ -11,7 +11,7 @@ function Academy() {
     fetch("http://localhost:3500/articles")
       .then((response) => response.json())
       .then((data) => {
-        console.log(data);
+        // console.log(data);
         setArticles(data);
         setFilteredArticles(data); // Initially, all articles are displayed
       })
@@ -35,7 +35,7 @@ function Academy() {
 
   return (
     <>
-      <div className="flex items-center justify-center py-12">
+      <div className="flex items-center justify-center py-12  mb-40">
         <div className="mx-6">
           <div className="mb-8 flex flex-row justify-between gap-4">
             <h2 className="font-display text-3xl font-semibold text-base-content">

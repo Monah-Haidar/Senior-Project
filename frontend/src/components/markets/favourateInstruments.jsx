@@ -9,41 +9,38 @@ function FavouriteInstruments() {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const response = await axiosPrivate.get("/api/price");
-        // console.log("Favorate Instrument Data:", response.data);
+        const response = await axiosPrivate.get("/api/price/watchlist");
 
-        const filteredMarketData = response.data.prices.filter((item) => {
-          return item.watchlist_id === response.data.account_id;
-        });
-      
-        setMarketData(filteredMarketData);
+        const instrumentRanks = response.data.watchlist.map(
+          (item) => item.Instrument,
+        );
+        const sortByRank = instrumentRanks.sort((a, b) => a.rank - b.rank);
 
+        setMarketData(sortByRank);
       } catch (error) {
         console.error("Error fetching data:", error);
-        return null;
       }
     };
 
     fetchData();
   }, []);
 
-
   return (
     <>
       <tbody>
         {marketData.map((item, index) => (
           <InstrumentCard
-          key={index}
-          instrument_id={item.instrument_id}
-          rank={item.rank}
-          name={item.name}
-          price={item.price}
-          percentChange24h={item.percent_change_24h}
-          volumeChange24h={item.volume_change_24h}
-          marketCap={item.market_cap}
-          circulatingSupply={item.circulating_supply}
-          totalSupply={item.total_supply}
-          isInWatchlist={true}
+            key={index}
+            instrument_id={item.instrument_id}
+            rank={item.rank}
+            name={item.name}
+            price={item.price}
+            percentChange24h={item.percent_change_24h}
+            volumeChange24h={item.volume_change_24h}
+            marketCap={item.market_cap}
+            circulatingSupply={item.circulating_supply}
+            totalSupply={item.total_supply}
+            isInWatchlist={true}
           />
         ))}
       </tbody>

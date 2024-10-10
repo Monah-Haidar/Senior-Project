@@ -25,25 +25,23 @@ function SignUp() {
     }
   }, []);
 
-  const inputStyle =
-    "w-full py-3 px-3 text-sm font-body font-medium rounded-md border border-slate-300 placeholder:text-slate-400 placeholder:text-base focus:outline-none focus:border-none focus:ring-1 focus:ring-primary";
-
+  
   return (
     <>
-      <div className="flex flex-row">
+      <div className="h-[92vh] grid-cols-1 gap-x-4 lg:grid lg:grid-cols-2">
         {/* Left Container*/}
-        <div className="lg:container lg:flex items-center justify-center hidden">
+        <div className="hidden items-center justify-center lg:container lg:flex">
           <div className="p-4">
             <img
-              src="https://www.investopedia.com/thmb/ASStR21rMu9-9_nj1x07H83zbUs=/1500x0/filters:no_upscale():max_bytes(150000):strip_icc()/close-up-of-stock-market-data-on-digital-display-1058454392-c48e2501742f4c21ad57c25d6a087bd0.jpg"
-              alt=""
-              className="rounded-3xl object-cover h-fit w-full"
+              src="https://plus.unsplash.com/premium_photo-1663931932651-ea743c9a0144?q=80&w=2670&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"
+              alt="img"
+              className="rounded-3xl object-cover h-full w-full"
             />
           </div>
         </div>
 
         {/* Right Container*/}
-        <div className="container mx-auto flex flex-col justify-between items-center h-screen">
+        <div className="container mx-auto flex flex-col justify-between items-center h-[90vh]">
           {/* Header Container*/}
           <div className="w-full flex items-center justify-start text-md text-center border-t p-4 lg:p-8">
             <a onClick={() => navigate(-1)} className=" cursor-pointer">
@@ -54,7 +52,7 @@ function SignUp() {
 
           {/* Form Container*/}
           <div className="w-80">
-            <h1 className="mb-6 text-2xl text-base-content text-center font-display font-semibold">
+            <h1 className="mb-6 text-2xl text-base-content text-center font-display font-bold">
               Sign up with email
             </h1>
             <Formik
@@ -141,7 +139,9 @@ function SignUp() {
                       onBlur={handleBlur}
                       value={values.username}
                       ref={userRef}
-                      className={inputStyle}
+                      className={`w-full px-4 py-2 border rounded-md text-gray-700 focus:outline-none focus:ring-2 focus:ring-primary ${
+                        errors.username && touched.username ? "border-red-500" : "border-gray-300"
+                      }`}
                     />
                     {errors.username && touched.username && (
                       <div style={{ color: "red" }}>{errors.username}</div>
@@ -155,7 +155,9 @@ function SignUp() {
                       onChange={handleChange}
                       onBlur={handleBlur}
                       value={values.email}
-                      className={inputStyle}
+                      className={`w-full px-4 py-2 border rounded-md text-gray-700 focus:outline-none focus:ring-2 focus:ring-primary ${
+                        errors.email && touched.email ? "border-red-500" : "border-gray-300"
+                      }`}
                     />
                     {errors.email && touched.email && (
                       <div style={{ color: "red" }}>{errors.email}</div>
@@ -169,7 +171,9 @@ function SignUp() {
                       onChange={handleChange}
                       onBlur={handleBlur}
                       value={values.password}
-                      className={inputStyle}
+                      className={`w-full px-4 py-2 border rounded-md text-gray-700 focus:outline-none focus:ring-2 focus:ring-primary ${
+                        errors.password && touched.password ? "border-red-500" : "border-gray-300"
+                      }`}
                     />
                     {errors.password && touched.password && (
                       <div style={{ color: "red" }}>{errors.password}</div>
@@ -183,7 +187,9 @@ function SignUp() {
                       onChange={handleChange}
                       onBlur={handleBlur}
                       value={values.first_name}
-                      className={inputStyle}
+                      className={`w-full px-4 py-2 border rounded-md text-gray-700 focus:outline-none focus:ring-2 focus:ring-primary ${
+                        errors.first_name && touched.first_name ? "border-red-500" : "border-gray-300"
+                      }`}
                     />
                     {errors.first_name && touched.first_name && (
                       <div style={{ color: "red" }}>{errors.first_name}</div>
@@ -197,7 +203,9 @@ function SignUp() {
                       onChange={handleChange}
                       onBlur={handleBlur}
                       value={values.last_name}
-                      className={inputStyle}
+                      className={`w-full px-4 py-2 border rounded-md text-gray-700 focus:outline-none focus:ring-2 focus:ring-primary ${
+                        errors.last_name && touched.last_name ? "border-red-500" : "border-gray-300"
+                      }`}
                     />
                     {errors.last_name && touched.last_name && (
                       <div style={{ color: "red" }}>{errors.last_name}</div>
@@ -206,9 +214,9 @@ function SignUp() {
                   <button
                     type="submit"
                     disabled={isSubmitting}
-                    className={inputStyle}
+                    className="w-full py-2 mt-4 bg-gradient-to-r from-blue-500 to-blue-700 text-white font-semibold rounded-md shadow-lg hover:shadow-xl focus:outline-none focus:ring-2 focus:ring-blue-700"
                   >
-                    Submit
+                    Register
                   </button>
                 </form>
               )}

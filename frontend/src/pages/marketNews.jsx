@@ -40,7 +40,7 @@ function MarketNews() {
         const response = await fetch("http://localhost:3500/api/news/crypto");
         const data = await response.json();
         setCryptoNews(data);
-        console.log(data);
+        // console.log(data);
       } catch (error) {
         console.error("Error fetching crypto news:", error);
       }
@@ -64,7 +64,7 @@ function MarketNews() {
   }, []);
 
   return (
-    <div className="mx-6">
+    <div className="mx-6  mb-40">
       <div className="mt-8 flex flex-col">
         <h1 className="text-center text-7xl font-bold text-base-content">
           News

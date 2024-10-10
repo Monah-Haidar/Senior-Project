@@ -166,7 +166,7 @@ const getAllOrders = async (req, res) => {
       orders: orders,
     });
   } catch (err) {
-    console.err(err);
+    console.error(err);
     res.status(500).json({ message: err.message });
   }
 };
@@ -174,7 +174,7 @@ const getAllOrders = async (req, res) => {
 const closeOrder = async (req, res) => {
   try {
     const order_id = req.params.id;
-
+    console.log("Order ID: ",order_id);
     const user_id = req.user_id;
 
     const account = await Account.findOne({
@@ -230,8 +230,8 @@ const closeOrder = async (req, res) => {
     return res.json({
       message: "Order Closed",
       data: order,
-      profit_loss_amount: profit_loss_amount,
-      account_new_balance: account_new_balance,
+      // profit_loss_amount: profit_loss_amount,
+      // account_new_balance: account_new_balance,
       message: "Account total balance modified",
     });
   } catch (err) {
