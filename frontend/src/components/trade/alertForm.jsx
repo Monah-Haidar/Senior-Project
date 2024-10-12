@@ -15,9 +15,9 @@ const AlertForm = () => {
   const axiosPrivate = useAxiosPrivate();
 
   const initialValues = {
-    title: "fads",
-    threshold: "534",
-    expiration_date: "2024-01-01",
+    title: "",
+    threshold: "",
+    expiration_date: "",
   };
 
   const validationSchema = Yup.object({

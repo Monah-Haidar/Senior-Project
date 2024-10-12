@@ -10,17 +10,18 @@ const createAccountFromUser = async (user_id) => {
       user_id: user_id,
     });
 
-    const watchlist = await Watchlist.create({
-      account_id: account.account_id,
-      watchlist_id: account.account_id
-    });
+    // const watchlist = await Watchlist.create({
+    //   account_id: account.account_id,
+    //   watchlist_id: account.account_id,
+
+    // });
 
     //return res.json({ message: "Account created", account: account});
 
     return {
       message: "Account & Watchlist created",
       account: account,
-      watchlist: watchlist,
+      // watchlist: watchlist,
     };
   } catch (err) {
     console.error(err);

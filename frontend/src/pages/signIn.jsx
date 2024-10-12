@@ -44,8 +44,8 @@ function SignIn() {
             </h1>
             <Formik
               initialValues={{
-                email: "monahhaidar1123@gmail.com",
-                password: "monahhaidar1123@M",
+                email: "",
+                password: "",
               }}
               onSubmit={(values, { setSubmitting, setErrors, resetForm }) => {
                 fetch("http://localhost:3500/user/login", {

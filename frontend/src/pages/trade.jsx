@@ -89,7 +89,7 @@ function Trade() {
               className="flex w-full flex-row items-center gap-2"
               onClick={() => {
                 const requestBody = {
-                  text: "Predict the price of bitcoin knowing that it is flucktiating between 68000 and 71000",
+                  text: "Predict the price of bitcoin knowing that it is flucktiating between 30000 and 71000",
                 };
                 fetch("http://localhost:5000/trading-bot", {
                   method: "POST",
@@ -121,7 +121,7 @@ function Trade() {
             </div>
 
             <div className="dropdown-content z-[1] w-72 rounded-box bg-base-100 p-2 shadow">
-              <p>{predictedPrice}</p>
+              <p className="text-left leading-tight text-xs">{predictedPrice}</p>
             </div>
           </div>
 
